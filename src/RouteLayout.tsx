@@ -16,6 +16,7 @@ import { Roles } from "./@types/types";
   const Shop = lazy(() => import("./page/Shop"));
   const Cart = lazy(() => import("./page/Cart"));
   const Product = lazy(() => import("./page/Product"));
+  const Seller = lazy(() => import("./page/Seller"));
   
   const LazyWrapper = (Component: React.ComponentType) => (
     <Suspense fallback={<Preload />}>
@@ -24,15 +25,7 @@ import { Roles } from "./@types/types";
       </ErrorBoundary>
     </Suspense>
   );
-  // const LazyWrapper = (Component: React.ComponentType) => {
-  //   return () => (
-  //     <Suspense fallback={<Preload />}>
-  //       <ErrorBoundary>
-  //         <Component />
-  //       </ErrorBoundary>
-  //     </Suspense>
-  //   );
-  // };
+  
   
   
   export default function RouteLayout() {
@@ -46,7 +39,9 @@ import { Roles } from "./@types/types";
                 <Route path=":productId" element={LazyWrapper(Product)} />
                 <Route path="product/:productId" element={LazyWrapper(Cart)} />
               </Route>
-            
+            <Route element={<ProtectedRoutes allowedRoles={[Roles.SELLER]} />} path="seller">
+                <Route index element={LazyWrapper(Seller)} />
+              </Route>
           </Route>
           {/* <Route path="*" element={LazyWrapper(NotFound)} /> */}
         </>
