@@ -2,26 +2,28 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ProductImageProps {
-  images: string[];
+  image_of_land: string[];
 }
 
-export default function ProductImage({ images }: ProductImageProps) {
-  const [selectedImage, setSelectedImage] = useState(images[0]);
+export default function ProductImage({ image_of_land }: ProductImageProps) {
+  const [selectedImage, setSelectedImage] = useState(image_of_land[0]);
+  console.log(image_of_land,'Image of land')
 
   const handlePrev = () => {
-    const index = images.indexOf(selectedImage);
-    setSelectedImage(images[(index - 1 + images.length) % images.length]);
+    const index = image_of_land.indexOf(selectedImage);
+    setSelectedImage(image_of_land[(index - 1 + image_of_land.length) % image_of_land.length]);
   };
 
   const handleNext = () => {
-    const index = images.indexOf(selectedImage);
-    setSelectedImage(images[(index + 1) % images.length]);
+    const index = image_of_land.indexOf(selectedImage);
+    setSelectedImage(image_of_land[(index + 1) % image_of_land.length]);
   };
 
   return (
     <div className="w-full flex flex-col items-center">
       <div className="relative w-[400px] h-[300px]">
         <img src={selectedImage} alt="Product" className="w-full h-full object-cover rounded-lg" />
+        
         <button className="absolute left-2 top-1/2 -translate-y-1/2 bg-white p-2 rounded-full shadow" onClick={handlePrev}>
           <ChevronLeft />
         </button>
@@ -30,7 +32,7 @@ export default function ProductImage({ images }: ProductImageProps) {
         </button>
       </div>
       <div className="flex mt-3 space-x-2">
-        {images.map((img, index) => (
+        {image_of_land.map((img, index) => (
           <img
             key={index}
             src={img}

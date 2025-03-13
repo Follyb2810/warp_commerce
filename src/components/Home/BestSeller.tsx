@@ -11,7 +11,7 @@ import { useAllProductQuery } from "@/api/prodService"
   
   export function BestSeller() {
       const {isLoading,data,status,error} = useAllProductQuery({})
-          console.log(data)
+          console.log(data?.data)
           console.log(status)
           console.log(isLoading)
           if (isLoading) {
@@ -31,8 +31,8 @@ import { useAllProductQuery } from "@/api/prodService"
         >
           <CarouselContent>
             
-            {data?.products?.length > 0 ? (
-                  data.products.slice(0,6).map((property: PropertyCardProps, index: number) => (
+            {data?.data?.products?.length > 0 ? (
+                  data?.data.products.slice(0,6).map((property: PropertyCardProps, index: number) => (
                     <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/4">
                 <PropertyCard key={index} {...property} isAddToCart />
               </CarouselItem>

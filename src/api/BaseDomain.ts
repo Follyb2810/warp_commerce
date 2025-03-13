@@ -1,3 +1,4 @@
+import AuthClientStore from '@/utils/AuthStore';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import axios from 'axios';
 
@@ -20,12 +21,16 @@ export const baseDomain = createApi({
   reducerPath: 'baseDomainApi',
   refetchOnMountOrArgChange: 5,  
   keepUnusedDataFor: 5,          
-  tagTypes: ["Product"],
+  tagTypes: ["Product",'Cart'],
   baseQuery: fetchBaseQuery({
     baseUrl,             
     credentials: 'include', 
     prepareHeaders: async (headers, ) => {
       try {
+        const accessToken = AuthClientStore.getAccessToken()
+        if(accessToken){
+          headers.set('Authorization',`Bearer ${accessToken}`)
+        }
         // const token = await getAntiForgeryToken();
         // console.log(token, 'after api anti-forgery token');
         // if (token) {

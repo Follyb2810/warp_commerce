@@ -1,6 +1,8 @@
 import { IProduct } from "@/@types/types";
-import { RootState, useAppSelector } from "@/store";
-import { useState } from "react";
+// import { RootState, useAppSelector } from "@/store";
+// import { useState } from "react";
+// import AppButton from "../shared/AppButton";
+import { Link } from "react-router-dom";
 
 export interface ShopCardProps extends IProduct {
   price: number;
@@ -16,17 +18,18 @@ export default function ShopCard({
   discountPrice,
   discount,
   stock,
+  _id
 }: ShopCardProps) {
-  const [quantity, setQuantity] = useState(0);
-    const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
-  const increment = () => setQuantity((prev) => prev + 1);
-  const decrement = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
-  const addToCart = () => {
-    console.log(`Added ${quantity} ${title} to cart`);
-  };
+  // const [quantity, setQuantity] = useState(0);
+  //   const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
+  // const increment = () => setQuantity((prev) => prev + 1);
+  // const decrement = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
+  // const addToCart = () => {
+  //   console.log(`Added ${quantity} ${title} to cart`);
+  // };
 
   return (
-    <div className="border p-4 rounded-lg shadow-sm bg-white relative">
+    <Link to={`/shop/${_id}`} className="border p-4 rounded-lg shadow-sm bg-white relative cursor-pointer">
       {discount && (
         <span className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded">
           {discount}%
@@ -55,30 +58,27 @@ export default function ShopCard({
       </div>
 
 
-      <div className="flex items-center justify-between mt-2 border rounded-full p-2 w-full">
-        <button
+      {/* <div className="flex items-center justify-between mt-2 border rounded-full p-2 w-full">
+        <AppButton
           onClick={decrement}
           disabled={quantity === 0}
           className={`px-3 py-1 rounded-full text-sm ${
             quantity === 0 ? "text-gray-400 cursor-not-allowed" : "bg-gray-200 hover:bg-gray-300"
           }`}
-        >
-          -
-        </button>
+         label="-"
+        />
         <span className="text-sm font-medium">{quantity}</span>
-        <button onClick={increment} className="px-3 py-1 bg-warp-200 rounded-full hover:bg-gray-300">
-          +
-        </button>
+        <AppButton onClick={increment} className="px-3 py-1 bg-warp-200 rounded-full hover:bg-gray-300" label="+"/>
+          
       </div>
 
       {isAuthenticated && quantity > 0 && (
-        <button
+        <AppButton
           onClick={addToCart}
           className="mt-3 w-full bg-blue-600 text-white py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
-        >
-          Add to Cart
-        </button>
-      )}
-    </div>
+          label="Add to Cart"
+        />
+      )} */}
+    </Link>
   );
 }

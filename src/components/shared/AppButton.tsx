@@ -11,10 +11,11 @@ interface IAppButton extends React.ComponentProps<typeof Button> {
   buttonStyle?: string;
   disabled?: boolean;
   onPress?: () => void;
+  children?: React.ReactNode; 
 }
 
 export default function AppButton({
-  label = "Submit",
+  label,
   buttonStyle = "",
   rightIcon,
   isLoading = false,
@@ -22,6 +23,7 @@ export default function AppButton({
   disabled = false,
   leftIcon,
   onPress,
+  children, // ✅ Accept children
   ...rest 
 }: IAppButton) {
   return (
@@ -33,8 +35,9 @@ export default function AppButton({
     >
       {!isLoading && leftIcon && <span className="ml-2">{leftIcon}</span>}
       {isLoading && <Loader2 className="animate-spin mr-2" size={20} />}
-      {!isLoading && <span className={`${textStyle}`}>{label}</span>}
+      {!isLoading && label && <span className={`${textStyle}`}>{label}</span>}
       {!isLoading && rightIcon && <span className="ml-2">{rightIcon}</span>}
+      {!isLoading && children} 
     </Button>
   );
 }

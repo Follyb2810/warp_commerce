@@ -50,7 +50,7 @@ export interface IProduct  {
     description?: string;
     price: number;
     category?:string;
-    seller?:string;
+    seller?:ISellerId;
     stock: number;
     address:string;
     mapping_location:string;
@@ -59,3 +59,9 @@ export interface IProduct  {
     document_of_land:string;
     
   }
+  
+  type ISellerId = {
+    _id:string
+    walletAddress:string
+  }
+  

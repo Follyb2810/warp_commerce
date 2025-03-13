@@ -15,11 +15,16 @@ export const prodService = baseDomain.injectEndpoints({
     allProduct:build.query({
      query :()=>'/product' ,
      providesTags: ['Product'],   
-    })
+    }),
+    SingleProduct: build.query({
+      query: (id) => `/product/${id}`, 
+      providesTags: ['Product'], 
+      // invalidatesTags : ['Blogs'], 
+    }),
     
   }),
   
   overrideExisting: false,
 });
 
-export const {useCreateProductMutation,useAllProductQuery } = prodService;
+export const {useCreateProductMutation,useAllProductQuery,useSingleProductQuery } = prodService;

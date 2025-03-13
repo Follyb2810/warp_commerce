@@ -1,7 +1,7 @@
 
 class AuthClientStore {
-    static getAccessToken(token:string) {
-      return localStorage.getItem(token);
+    static getAccessToken():string| null {
+      return localStorage.getItem('auth');
     }
   
     static setAccessToken(token: string) {
@@ -12,7 +12,7 @@ class AuthClientStore {
       localStorage.removeItem('auth');
     }
   
-    static getRefreshToken() {
+    static getRefreshToken():string| null {
       return localStorage.getItem('refreshToken');
     }
   
