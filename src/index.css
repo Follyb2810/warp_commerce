@@ -6,6 +6,8 @@
 
 @theme {
   --color-warp-100: #122442;
+  --color-warp-200: #FFCD00;
+  --color-warp-300: #FBEACF;
 }
 
 :root {

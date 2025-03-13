@@ -1,5 +1,8 @@
-import Header from '@/components/ui/shared/Header';
-import SubHeader from '@/components/ui/shared/SubHeader';
+import FeatureList from '@/components/shared/FeatureList';
+import Footer from '@/components/shared/Footer';
+import Header from '@/components/shared/Header';
+import NewsletterSection from '@/components/shared/NewsletterSection';
+import SubHeader from '@/components/shared/SubHeader';
 import { Outlet } from 'react-router-dom';
 
 
@@ -12,9 +15,10 @@ export default function Layout() {
       <Header />
       <main className="mt-2">
         <Outlet />
-        
       </main>
-      {/* <Footer /> */}
+      <NewsletterSection />
+      <FeatureList />
+      <Footer />
     </div>
 
   );

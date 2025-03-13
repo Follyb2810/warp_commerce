@@ -1,0 +1,18 @@
+<InputField
+  id="password"
+  type="password"
+  placeholder="Enter password"
+  value={password}
+  onChange={(e) => setPassword(e.target.value)}
+/>
+import { SearchIcon } from "lucide-react";
+
+<InputField
+  id="search"
+  type="text"
+  placeholder="Search here..."
+  value={searchValue}
+  onChange={(e) => setSearchValue(e.target.value)}
+  icon={<SearchIcon className="h-5 w-5" />}
+  onIconClick={() => console.log("Search clicked")}
+/>
