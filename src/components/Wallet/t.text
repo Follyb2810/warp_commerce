@@ -1,0 +1,15 @@
+export const useContract = (client: any, contractAddress: string) => {
+    const queryContract = async (msg: string) => {
+      if (!client) return null;
+      return await client.queryContractSmart(contractAddress, msg);
+    };
+  
+
+    const executeContract = async (senderAddress: string, msg: string, funds: unknown[]) => {
+      if (!client) return null;
+      return await client.execute(senderAddress, contractAddress, msg, "auto", undefined, funds);
+    };
+  
+    return { queryContract, executeContract };
+  };
+  

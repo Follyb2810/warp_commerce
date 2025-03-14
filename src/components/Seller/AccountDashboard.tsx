@@ -33,7 +33,7 @@ export default function AccountDashboard() {
 
 
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(addressMasked);
+    navigator.clipboard.writeText(user?.walletAddress || '0x0000000000000000000000000000000000000000');
     alert("Copied to clipboard!");
   };
 

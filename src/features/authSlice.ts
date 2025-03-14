@@ -6,7 +6,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 interface User {
   id: string;
 //   email: string;
-  walletAddress?: string;
+  walletAddress: string;
   roles: Roles[];
 }
 
@@ -40,6 +40,7 @@ export const authSlice = createSlice({
         state.isAuthenticated = true;
         state.user = {
           id: "1",
+          walletAddress:'0x0000000000000000000000000000000000000000',
         //   email: "admin@example.com",
           roles: [Roles.ADMIN],
         };

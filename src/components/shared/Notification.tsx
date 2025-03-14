@@ -1,23 +1,29 @@
 import { Bell, MessageCircle, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const NotiData = [
   {
     icon: (className: string) => <ShoppingCart className={className} />,
     count: 3,
+    path: "/shop/buyer_cart",
   },
-  
   {
     icon: (className: string) => <Bell className={className} />,
     count: 0,
+    path: "/",
   },
   {
     icon: (className: string) => <MessageCircle className={className} />,
     count: 5,
+    path: "/",
   },
 ];
 
 export default function Notification() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return (
     <section className="flex gap-3">
       {NotiData.map((item, index) => (
@@ -25,7 +31,8 @@ export default function Notification() {
           key={index}
           icon={item.icon}
           count={item.count}
-          onPress={() => console.log("Clicked")}
+          isActive={location.pathname === item.path}
+          onPress={() => navigate(item.path)}
         />
       ))}
     </section>
@@ -35,21 +42,22 @@ export default function Notification() {
 interface IButtonWithIcon<T = void> {
   icon: (className: string) => React.ReactNode;
   count?: number;
-  onPress:() => T;
-  // onPress(): void;
+  isActive: boolean;
+  onPress: () => T;
 }
 
-export function ButtonWithIcon({ icon, count, onPress }: IButtonWithIcon) {
+export function ButtonWithIcon({ icon, count, isActive, onPress }: IButtonWithIcon) {
   return (
     <motion.button
-    whileHover={{ scale: 1.1 }}
-    whileTap={{ scale: 0.9 }}
-    className={`relative flex items-center justify-center p-2 transition-all duration-300 
-      ${count && count > 0 ? "border border-red-500 bg-red-100 hover:bg-red-200 rounded-full" : "bg-transaparent rounded-full  hover:bg-gray-200"}`}
-    onClick={onPress}
-  >
-  
-      {icon(count && count > 0 ? "text-red-500" : "text-gray-600")}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
+      className={`relative flex items-center justify-center p-2 transition-all duration-300 
+        ${count && count > 0 ? "border border-red-500 bg-red-100 hover:bg-red-200 rounded-full" : "bg-transparent rounded-full hover:bg-gray-200"}
+        ${isActive ? "text-blue-600" : "text-gray-600"}
+      `}
+      onClick={onPress}
+    >
+      {icon(isActive ? "text-blue-600" : count && count > 0 ? "text-red-500" : "text-gray-600")}
       {count && count > 0 && (
         <motion.span
           initial={{ scale: 0 }}

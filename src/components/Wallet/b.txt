@@ -1,0 +1,44 @@
+import { useContract } from "@/hooks/useContract";
+import { useKeplr } from "@/hooks/useKeplr";
+import React, { useState } from "react";
+
+interface ContractInteractionProps {
+  proxyAddress: string; // Using Proxy Contract
+}
+
+export const ContractInteraction: React.FC<ContractInteractionProps> = ({
+  proxyAddress, // Now interacting with Proxy
+}) => {
+  const { address, client } = useKeplr();
+  const { executeContract } = useContract(client, proxyAddress);
+  const [queryResult, setQueryResult] = useState(null);
+
+  const handleExecute = async () => {
+    if (!address) return;
+
+    const executeMsg = {
+      forward: {
+        msg: Buffer.from(
+          JSON.stringify({
+            increment: {}, // Forwarding the increment message
+          })
+        ).toString("base64"),
+      },
+    };
+
+    const result = await executeContract(address, executeMsg, []);
+
+    if (result) {
+      alert("Transaction successful!");
+    }
+  };
+
+  return (
+    <div>
+      <h2>Proxy Contract Interaction</h2>
+      <button onClick={handleExecute} disabled={!address}>
+        Execute via Proxy
+      </button>
+    </div>
+  );
+};

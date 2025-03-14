@@ -21,7 +21,7 @@ export const baseDomain = createApi({
   reducerPath: 'baseDomainApi',
   refetchOnMountOrArgChange: 5,  
   keepUnusedDataFor: 5,          
-  tagTypes: ["Product",'Cart'],
+  tagTypes: ["Product",'Cart','Order'],
   baseQuery: fetchBaseQuery({
     baseUrl,             
     credentials: 'include', 

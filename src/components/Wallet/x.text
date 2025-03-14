@@ -1,0 +1,57 @@
+import { useState, useEffect } from "react";
+import { useContract } from "@/hooks/useContract";
+import { useKeplr } from "@/hooks/useKeplr";
+
+export const useContractInteraction = (contractAddress: string) => {
+  const { address, client } = useKeplr();
+  const { queryContract, executeContract } = useContract(client, contractAddress);
+  const [queryResult, setQueryResult] = useState<any>(null);
+
+  const handleQuery = async () => {
+    if (!client) return;
+    const result = await queryContract({ get_count: {} });
+    setQueryResult(result);
+  };
+
+  const handleExecute = async () => {
+    if (!address) return;
+    const result = await executeContract(
+      address,
+      { increment: {} },
+      []
+    );
+    if (result) {
+      alert("Transaction successful!");
+      handleQuery();
+    }
+  };
+
+  useEffect(() => {
+    if (contractAddress) {
+      handleQuery();
+    }
+  }, [contractAddress]);
+
+  return { address, queryResult, handleQuery, handleExecute };
+};
+import React from "react";
+import { useContractInteraction } from "@/hooks/useContractInteraction";
+
+interface ContractInteractionProps {
+  contractAddress: string;
+}
+
+export const ContractInteraction: React.FC<ContractInteractionProps> = ({ contractAddress }) => {
+  const { address, queryResult, handleQuery, handleExecute } = useContractInteraction(contractAddress);
+
+  return (
+    <div>
+      <h2>Contract Interaction</h2>
+      <button onClick={handleQuery}>Query Contract</button>
+      {queryResult && <pre>{JSON.stringify(queryResult, null, 2)}</pre>}
+      <button onClick={handleExecute} disabled={!address}>
+        Execute Contract
+      </button>
+    </div>
+  );
+};

@@ -41,7 +41,7 @@ export default function ShopCard({
       <h3 className="text-sm font-semibold mt-2">{title}</h3>
 
       {stock > 0 ? (
-        <p className="text-green-500 text-xs">IN STOCK</p>
+        <p className="text-green-500 text-xs">IN STOCK {stock}</p>
       ) : (
         <p className="text-red-500 text-xs">OUT OF STOCK</p>
       )}

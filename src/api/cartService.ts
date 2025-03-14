@@ -13,6 +13,10 @@ export const cartService = baseDomain.injectEndpoints({
       invalidatesTags : ['Cart'],
     //   invalidatesTags: ( { id }) => [{ type: 'Get_in_Touch', id }],
     }),
+    userCart:build.query({
+     query :()=>'/user_cart' ,
+     providesTags: ['Cart'],   
+    }),
     allProduct:build.query({
      query :()=>'/product' ,
      providesTags: ['Product'],   
@@ -28,4 +32,4 @@ export const cartService = baseDomain.injectEndpoints({
   overrideExisting: false,
 });
 
-export const {useAddToCartMutation,useAllProductQuery,useSingleProductQuery } = cartService;
+export const {useAddToCartMutation,useAllProductQuery,useSingleProductQuery,useUserCartQuery } = cartService;

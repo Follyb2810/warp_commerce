@@ -1,13 +1,12 @@
-import { IApiResponse, IProduct } from "@/@types/types";
-import { useCallback, useState, useMemo } from "react";
+import { IProduct } from "@/@types/types";
 import AppButton from "../shared/AppButton";
-import { useAddToCartMutation } from "@/api/cartService";
+import { useProductActions } from "@/hooks/useProductActions";
 
 interface ProductInfoProps extends IProduct {
   oldPrice?: number;
   rating?: number;
   description?: string;
-  specialOfferEnds?: string;
+  specialOfferEnds?: string
 }
 
 export default function ProductInfo({
@@ -17,26 +16,10 @@ export default function ProductInfo({
   rating,
   description,
   _id,
-  document_of_land
-}: ProductInfoProps & { document_of_land?: string }) {
-  const [quantity, setQuantity] = useState(0);
-  const increment = () => setQuantity((prev) => prev + 1);
-  const decrement = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
-
-  const [addToCart, { isLoading }] = useAddToCartMutation();
-  const isAddingToCart = useMemo(() => isLoading, [isLoading]);
-
-  const handleAddToCart = useCallback(async () => {
-    try {
-      const response: IApiResponse = await addToCart({
-        quantity,
-        productId: _id,
-      }).unwrap();
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [_id, quantity, addToCart]);
+  document_of_land,
+}: ProductInfoProps) {
+  const { quantity, increment, decrement, isAddingToCart, orderLoad, orderPayConfirm, handleAddToCart, handleBuyOrder } =
+    useProductActions(_id);
 
   return (
     <div className="w-full p-4 md:p-6 space-y-4">
@@ -59,12 +42,7 @@ export default function ProductInfo({
             className="w-full h-[500px] border rounded-lg"
             title="Product Document"
           />
-          <a
-            href={document_of_land}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 underline mt-2 block"
-          >
+          <a href={document_of_land} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline mt-2 block">
             Open Document in New Tab
           </a>
         </div>
@@ -77,15 +55,9 @@ export default function ProductInfo({
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3 mt-6">
-        <AppButton
-          label="Add To Cart"
-          isLoading={isAddingToCart}
-          onClick={handleAddToCart}
-          disabled={quantity === 0}
-        />
-        <AppButton label="Buy Now" disabled={quantity === 0} />
+        <AppButton label="Add To Cart" isLoading={isAddingToCart} onClick={handleAddToCart} disabled={quantity === 0} />
+        <AppButton label="Buy Now" disabled={quantity === 0} onClick={handleBuyOrder} isLoading={orderLoad && orderPayConfirm} />
       </div>
     </div>
   );
 }
-

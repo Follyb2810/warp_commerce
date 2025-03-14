@@ -14,7 +14,7 @@ export const prodService = baseDomain.injectEndpoints({
     }),
     allProduct:build.query({
      query :()=>'/product' ,
-     providesTags: ['Product'],   
+     providesTags: ['Product','Order'],   
     }),
     SingleProduct: build.query({
       query: (id) => `/product/${id}`, 
