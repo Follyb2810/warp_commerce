@@ -64,7 +64,8 @@ export interface IProduct  {
     walletAddress:string
   }
 
-  export type ICart = Partial<IProduct> & { quantity?: number };
+  export type ICart = Partial<IProduct> & { quantity?: number ,price?:number,};
+  
   
   export interface IAvailableOrder {
     productId: string;
@@ -73,6 +74,19 @@ export interface IProduct  {
     totalAmount: number;
     seller: string;
     sellerAddress: string;
+  }
+  
+  export interface CartItem {
+    _id: string;
+    product: Partial<IProduct>;
+    quantity: number;
+    price: number;
+  }
+  export interface ICartResponseData {
+    _id: string;
+    user: string;
+    total: number;
+    items: CartItem[];
   }
   // export type ICart = Partial<IProduct> & { quantity?: number };
   // export type ICart = Partial<IProduct>;
@@ -175,5 +189,7 @@ export interface IProduct  {
 // const numberBox: Box<number> = { content: 10 }; // ✅ Works
 // const stringBox: Box<string> = { content: "Hello" }; // ✅ Works
 // const anyBox: Box = { content: "Hello" }; // ❌ ERROR: Type is required
+
+
 
 

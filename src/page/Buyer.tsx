@@ -1,6 +1,11 @@
 
+import BuyerDashboard from "@/components/Cart/BuyerDashboard";
+
 export default function Buyer() {
+     
   return (
-    <div>Buyer</div>
+    <div>
+        <BuyerDashboard/>
+    </div>
   )
 }

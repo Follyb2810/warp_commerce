@@ -1,39 +1,37 @@
 import { motion } from "framer-motion";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import AppButton from "./AppButton";
-
-const tabs = [
-  { label: "Buyer", path: "/shop" },
-  { label: "Seller", path: "/seller" },
-  // { label: "Admin", path: "/admin" },
-];
+import { useNavigate } from "react-router-dom";
 
 export default function SwitchButton() {
+  const [selected, setSelected] = useState<"buyer" | "seller">("buyer");
   const navigate = useNavigate();
-  const location = useLocation();
-
-  const activeIndex = tabs.findIndex((tab) => tab.path === location.pathname);
 
   return (
-    <section className="relative flex p-1 rounded-lg w-64 bg-gray-200">
-
+    <section className="relative flex p-1 rounded-lg w-64">
       <motion.div
-        className="absolute inset-y-0 w-1/3 rounded-lg bg-blue-500"
-        animate={{ left: `${(activeIndex / tabs.length) * 100}%` }}
+        className="absolute inset-y-0 left-0 w-1/2 rounded-lg transition-all bg-gray-200"
+        animate={{ x: selected === "seller" ? "100%" : "0%" }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        style={{ width: `${100 / tabs.length}%` }}
       />
-      {tabs.map((tab, index) => (
-        <AppButton
-          key={tab.path}
-          label={tab.label}
-          variant={activeIndex === index ? "default" : "secondary"}
-          className={`w-1/${tabs.length} rounded-none relative z-10 text-center transition-all ${
-            activeIndex === index ? "text-white" : "text-gray-600"
-          }`}
-          onClick={() => navigate(tab.path)}
-        />
-      ))}
+      <AppButton
+        label="Buyer"
+        variant={selected === "buyer" ? "default" : "secondary"}
+        className="w-1/2 rounded-none relative z-10 text-center"
+        onClick={() => {
+          setSelected("buyer");
+          navigate("/");
+        }}
+      />
+      <AppButton
+        label="Seller"
+        variant={selected === "seller" ? "default" : "secondary"}
+        className="w-1/2 rounded-none relative z-10 text-center"
+        onClick={() => {
+          setSelected("seller");
+          navigate("/seller");
+        }}
+      />
     </section>
   );
 }

@@ -6,7 +6,6 @@ import ReviewsTab from "./ReviewsTab";
 export default function ProductTabs() {
   return (
     <Tabs defaultValue="description" className="w-full">
-    
       <TabsList className="border-b w-full flex">
         <TabsTrigger value="description" className="px-4 pb-2">Description</TabsTrigger>
         <TabsTrigger value="reviews" className="px-4 pb-2">Reviews (2)</TabsTrigger>

@@ -1,35 +1,59 @@
 import { baseDomain } from "./BaseDomain";
 
-
 export const cartService = baseDomain.injectEndpoints({
   endpoints: (build) => ({
     addToCart: build.mutation({
-      query: ({ productId, quantity}: { productId: string,quantity:number }) => ({
-        url: '/cart/add_to_cart',
-        method: 'POST',
+      query: ({ productId, quantity }: { productId: string; quantity: number }) => ({
+        url: "/cart/add_to_cart",
+        method: "POST",
         body: { productId, quantity },
       }),
-      // providesTags: [],
-      invalidatesTags : ['Cart'],
-    //   invalidatesTags: ( { id }) => [{ type: 'Get_in_Touch', id }],
+      invalidatesTags: [{ type: "Cart" }], 
     }),
-    userCart:build.query({
-     query :()=>'/user_cart' ,
-     providesTags: ['Cart'],   
+
+    removeFromCart: build.mutation({
+      query: ({ productId, quantity }: { productId: string; quantity: number }) => ({
+        url: "/cart/remove_from_cart", 
+        method: "PUT",
+        body: { productId, quantity },
+      }),
+      invalidatesTags: ({ productId }) => [{ type: "Cart", id: productId }], 
     }),
-    allProduct:build.query({
-     query :()=>'/product' ,
-     providesTags: ['Product'],   
+    deleteFromCart: build.mutation({
+      query: ({ cartId }: { cartId: string }) => ({
+        url: `/cart/${cartId}`, 
+        method: "DELETE",
+        // body: {  },
+      }),
+      invalidatesTags: ({ cartId }) => [{ type: "Cart", id: cartId }], 
     }),
-    SingleProduct: build.query({
-      query: (id) => `/product/${id}`, 
-      providesTags: ['Product'], 
-      // invalidatesTags : ['Blogs'], 
+
+    userCart: build.query({
+      query: () => "/cart/user_cart",
+      providesTags: [{ type: "Cart" }],
+    }),
+
+    allProduct: build.query({
+      query: () => "/product",
+      providesTags: [{ type: "Product" }],
+    }),
+
+  
+    singleProduct: build.query({
+      query: (id) => `/product/${id}`,
+      providesTags: (result, error, id) => [{ type: "Product", id }],
     }),
     
   }),
-  
+
   overrideExisting: false,
 });
 
-export const {useAddToCartMutation,useAllProductQuery,useSingleProductQuery,useUserCartQuery } = cartService;
+export const {
+  useAddToCartMutation,
+  useRemoveFromCartMutation, 
+  useAllProductQuery,
+  useSingleProductQuery,
+  useUserCartQuery,
+  useDeleteFromCartMutation
+} = cartService;

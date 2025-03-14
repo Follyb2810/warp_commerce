@@ -37,7 +37,7 @@ import { Roles } from "./@types/types";
             <Route index element={LazyWrapper(App)} />
             <Route element={<ProtectedRoutes allowedRoles={[Roles.BUYER,Roles.SELLER]} />} path="shop">
                 <Route index element={LazyWrapper(Shop)} />
-                <Route path="/buyer_cart" element={LazyWrapper(Buyer)} />
+                <Route path="buyer_cart" element={LazyWrapper(Buyer)} />
                 <Route path=":productId" element={LazyWrapper(Product)} />
                 <Route path="product/:productId" element={LazyWrapper(Cart)} />
               </Route>

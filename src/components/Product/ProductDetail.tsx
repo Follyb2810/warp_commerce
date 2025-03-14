@@ -2,9 +2,12 @@ import ProductImage from "./ProductImage";
 import ProductInfo from "./ProductInfo";
 import ProductActions from "./ProductActions";
 // import { productDetailsData } from "@/CONSTANT/data";
-import ProductTabs from "./ProductTabs";
+// import ProductTabs from "./ProductTabs";
 import { useSingleProductQuery } from "@/api/prodService";
 import ApiStatusMessage from "../shared/ApiStatusMessage";
+import AppTabs from "../shared/AppTabs";
+import DescriptionTab from "./DescriptionTab";
+import ReviewsTab from "./ReviewsTab";
 
 export default function ProductDetail({
   productId,
@@ -20,6 +23,7 @@ export default function ProductDetail({
 
   const pImage = data?.data?.product?.image_of_land;
   const image = [pImage, pImage];
+  
 
   return (
     <section className="md:col-span-3">
@@ -35,12 +39,17 @@ export default function ProductDetail({
           {data?.data?.product && <ProductInfo {...data?.data?.product} />}
 
           <ProductActions />
-          <ProductTabs />
+          <AppTabs tabs={tabsData} defaultValue="description" />
         </div>
       </div>
     </section>
   );
 }
+
+const tabsData = [
+  { label: "Description", value: "description", content: <DescriptionTab /> },
+  { label: "Reviews (2)", value: "reviews", content: <ReviewsTab /> },
+];
 
 // let a = "a";
 // let arr = Array(2).fill(a); // ['a', 'a']
