@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CartItem, ICartResponseData } from "@/@types/types";
 import AppButton from "../shared/AppButton";
 import { useCartActions } from "@/hooks/useCartActions";
+import QuantitySelector from "../shared/QuantitySelector";
 
 interface CartProps {
   cart: ICartResponseData;
@@ -9,11 +10,11 @@ interface CartProps {
 }
 
 export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
-  const { handleRemoveCart, handleClearCart, removeLoad } = useCartActions();
+  const { handleRemoveCart, handleClearCart, removeLoad,decrement,deleteLoad,increment ,quantity} = useCartActions();
 
-  const handleRemoveItem = (productId?: string, quantity?: number) => {
+  const handleRemoveItem = (productId?: string) => {
     if (productId) {
-      handleRemoveCart(productId, quantity ?? 1);
+      handleRemoveCart(productId);
     } else {
       console.error("Product ID is undefined");
     }
@@ -23,9 +24,8 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
     alert(`Buy ${itemId}`);
   };
 
-  const handleEdit = (itemId: string) => {
-    alert(`Edit ${itemId}`);
-  };
+
+
 
   return (
     <div className="w-full max-w-3xl mx-auto p-4">
@@ -43,8 +43,13 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
                   <div className="flex-1">
                     <h3 className="font-semibold">{item.product.title}</h3>
                     <p className="text-sm text-gray-600">{item.product.description}</p>
-                    <p className="text-sm font-medium">Quantity: {item.quantity}</p>
                     <p className="font-semibold text-lg">${item.price * item.quantity}</p>
+                    
+                    <QuantitySelector 
+                      quantity={quantity} 
+                      increment={increment} 
+                      decrement={decrement} 
+                    />
                   </div>
 
                   <div className="flex flex-col space-y-2">
@@ -55,16 +60,11 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
                     />
 
                     <AppButton
-                      onClick={() => handleEdit(item._id)}
-                      className="px-4 py-2 w-full bg-yellow-500 hover:bg-yellow-600"
-                      label="Edit"
-                    />
-
-                    <AppButton
-                      onClick={() => handleRemoveItem(item?.product?._id, item.quantity)}
+                      onClick={() => handleRemoveItem(item?.product?._id)}
                       className="px-4 py-2 w-full bg-red-500 hover:bg-red-600"
                       label="Remove"
                       isLoading={removeLoad}
+                      disabled={quantity == 0}
                     />
                   </div>
                 </div>
@@ -80,6 +80,7 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
                   onClick={() =>handleClearCart(cart._id)}
                   className="px-6 py-2 bg-red-600 hover:bg-red-700"
                   label="Delete All"
+                  isLoading={deleteLoad}
                 />
               </div>
             </div>

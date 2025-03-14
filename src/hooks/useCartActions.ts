@@ -1,12 +1,17 @@
 import { useDeleteFromCartMutation, useRemoveFromCartMutation } from "@/api/cartService";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { IApiResponse } from "@/@types/types";
 
 export function useCartActions() {
   const [removeCart, { isLoading: removeLoad }] = useRemoveFromCartMutation();
   const [deleteCart, { isLoading: deleteLoad }] = useDeleteFromCartMutation();
+    const [quantity, setQuantity] = useState<number>(0);
+  
+    const increment = () => setQuantity((prev) => prev + 1);
+    const decrement = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
 
-  const handleRemoveCart = useCallback(async (productId: string, quantity: number) => {
+  const handleRemoveCart = useCallback(async (productId: string) => {
+  // const handleRemoveCart = useCallback(async (productId: string, quantity: number) => {
     console.log({productId})
     console.log(quantity)
     try {
@@ -15,7 +20,7 @@ export function useCartActions() {
     } catch (error) {
       console.error("Error removing item:", error);
     }
-  }, [removeCart]);
+  }, [removeCart,quantity]);
   
   const handleClearCart = useCallback(async (cartId: string) => {
     console.log({cartId})
@@ -27,5 +32,5 @@ export function useCartActions() {
     }
   }, [deleteCart]);
 
-  return { handleRemoveCart, removeLoad,deleteLoad,handleClearCart };
+  return { handleRemoveCart, removeLoad,deleteLoad,handleClearCart ,increment,decrement,quantity};
 }
