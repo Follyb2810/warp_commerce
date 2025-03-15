@@ -9,7 +9,7 @@ interface FormFieldProps {
   id: string;
   label?: string;
   placeholder: string;
-  type?: "text" | "email" | "tel" | "textarea" | "password";
+  type?: "text" | "email" | "tel" | "textarea" | "password" | 'number' | 'file';// "textarea" | "text" | "email" | "tel" | "password" 
   required?: boolean;
   className?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
