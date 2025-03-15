@@ -3,7 +3,8 @@ import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate';
 // import { atomChain } from '../config/atomChain';
 // import { junoChain } from '../config/junoChain';
 // import { osmosisChain } from '../config/osmosisChain';
-import { atomChainOne } from '../config/atomChainOne';
+// import { atomChainOne } from '../config/atomChainOne';
+import { neutronChain } from '@/config/neotron';
 
 export const useKeplr = () => {
   const [address, setAddress] = useState<string | null>(null);;
@@ -18,13 +19,16 @@ export const useKeplr = () => {
     }
 
     try {
+      
+      
+      await keplr.experimentalSuggestChain(neutronChain);
       // Enable the chain in Keplr
     //   await window.keplr.enable(atomChain.chainId);
-      await keplr.enable(atomChainOne.chainId);
+      await keplr.enable(neutronChain.chainId);
 
       // Get the offlineSigner for signing transactions
-    //   const offlineSigner = window.keplr.getOfflineSigner(atomChainOne.chainId);
-      const offlineSigner = keplr.getOfflineSigner(atomChainOne.chainId);
+    //   const offlineSigner = window.keplr.getOfflineSigner(neutronChain.chainId);
+      const offlineSigner = keplr.getOfflineSigner(neutronChain.chainId);
 
       // Get user address
       const accounts = await offlineSigner.getAccounts();
@@ -32,7 +36,7 @@ export const useKeplr = () => {
 
       // Create signing client
       const client = await SigningCosmWasmClient.connectWithSigner(
-        atomChainOne.rpc,
+        neutronChain.rpc,
         offlineSigner
       );
       setClient(client);

@@ -2,7 +2,7 @@ import { Card, CardContent } from "../ui/card";
 import AdCard from "./AdCard";
 
 const LiveAdsSection = () => (
-    <Card className="w-full md:w-2/3 p-6">
+    <Card className="w-full">
       <h2 className="text-lg font-bold mb-4">My Live Ads</h2>
       <CardContent className="space-y-4">
         {ads.map((ad) => (

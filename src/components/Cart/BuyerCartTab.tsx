@@ -2,6 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CartItem, ICartResponseData } from "@/@types/types";
 import AppButton from "../shared/AppButton";
 import { useCartActions } from "@/hooks/useCartActions";
+import { useState, useEffect } from "react";
 import QuantitySelector from "../shared/QuantitySelector";
 
 interface CartProps {
@@ -10,11 +11,35 @@ interface CartProps {
 }
 
 export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
-  const { handleRemoveCart, handleClearCart, removeLoad,decrement,deleteLoad,increment ,quantity} = useCartActions();
+  const [itemQuantities, setItemQuantities] = useState<Record<string, number>>({});
+  
+  useEffect(() => {
+    const initialQuantities: Record<string, number> = {};
+    cart.items.forEach(item => {
+      initialQuantities[item._id] = item.quantity;
+    });
+    setItemQuantities(initialQuantities);
+  }, [cart.items]);
+  
+  const { handleRemoveCart, handleClearCart, removeLoad,deleteLoad } = useCartActions();
 
-  const handleRemoveItem = (productId?: string) => {
+  const incrementItem = (itemId: string) => {
+    setItemQuantities(prev => ({
+      ...prev,
+      [itemId]: (prev[itemId] || 0) + 1
+    }));
+  };
+  
+  const decrementItem = (itemId: string) => {
+    setItemQuantities(prev => ({
+      ...prev,
+      [itemId]: prev[itemId] > 0 ? prev[itemId] - 1 : 0
+    }));
+  };
+
+  const handleRemoveItem = (productId?: string, quantity?: number) => {
     if (productId) {
-      handleRemoveCart(productId);
+      handleRemoveCart(productId, quantity ?? 1);
     } else {
       console.error("Product ID is undefined");
     }
@@ -24,8 +49,16 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
     alert(`Buy ${itemId}`);
   };
 
+  const calculateItemTotal = (item: CartItem) => {
+    const quantity = itemQuantities[item._id] || item.quantity;
+    return item.price * quantity;
+  };
 
-
+  const calculateCartTotal = () => {
+    return cart.items.reduce((total, item) => {
+      return total + calculateItemTotal(item);
+    }, 0);
+  };
 
   return (
     <div className="w-full max-w-3xl mx-auto p-4">
@@ -43,12 +76,12 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
                   <div className="flex-1">
                     <h3 className="font-semibold">{item.product.title}</h3>
                     <p className="text-sm text-gray-600">{item.product.description}</p>
-                    <p className="font-semibold text-lg">${item.price * item.quantity}</p>
-                    
-                    <QuantitySelector 
-                      quantity={quantity} 
-                      increment={increment} 
-                      decrement={decrement} 
+                    <p className="font-semibold text-lg">${calculateItemTotal(item)}</p>
+
+                    <QuantitySelector
+                      quantity={itemQuantities[item._id] || item.quantity}
+                      decrement={() => decrementItem(item._id)}
+                      increment={() => incrementItem(item._id)}
                     />
                   </div>
 
@@ -60,24 +93,23 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
                     />
 
                     <AppButton
-                      onClick={() => handleRemoveItem(item?.product?._id)}
+                      onClick={() => handleRemoveItem(item?.product?._id, itemQuantities[item._id] || item.quantity)}
                       className="px-4 py-2 w-full bg-red-500 hover:bg-red-600"
                       label="Remove"
                       isLoading={removeLoad}
-                      disabled={quantity == 0}
                     />
                   </div>
                 </div>
               ))}
 
               <div className="flex justify-between items-center pt-4">
-                <span className="text-xl font-bold">Total: ${cart.total}</span>
+                <span className="text-xl font-bold">Total: ${calculateCartTotal()}</span>
                 <AppButton onClick={onCheckout} className="px-6 py-2" label="Checkout"/>
               </div>
 
               <div className="pt-4 flex justify-end">
                 <AppButton
-                  onClick={() =>handleClearCart(cart._id)}
+                  onClick={() => handleClearCart(cart._id)}
                   className="px-6 py-2 bg-red-600 hover:bg-red-700"
                   label="Delete All"
                   isLoading={deleteLoad}

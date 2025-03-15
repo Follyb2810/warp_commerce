@@ -15,7 +15,7 @@ import { maskAddress } from "@/utils/maskAddress";
     };
   
     return (
-      <Card className="w-full md:w-1/3 p-6">
+      <Card className="w-full md:w-1/3 p-6 h-1/2">
         <div className="flex flex-col items-center">
           <Avatar className="w-24 h-24">
             <AvatarImage src="/avatar.jpg" alt="John Doe" />
