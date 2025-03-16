@@ -8,7 +8,7 @@ export const orderService = baseDomain.injectEndpoints({
         method: "POST",
         body: { productId, quantity },
       }),
-      invalidatesTags: (_, error, { productId }) => [
+      invalidatesTags: (_, _error, { productId }) => [
         { type: "Product", id: productId }, 
         { type: "Order" }
       ],
@@ -20,7 +20,7 @@ export const orderService = baseDomain.injectEndpoints({
         method: "POST",
         body: { productId, quantity, transactionHash },
       }),
-      invalidatesTags: (_, error, { productId }) => [
+      invalidatesTags: (_, _error, { productId }) => [
         { type: "Product", id: productId }, 
         { type: "Order" }
       ],
