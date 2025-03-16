@@ -1,21 +1,22 @@
 import { useAllUserOrderQuery } from '@/api/orderService'
 import { Card, CardContent } from '../ui/card'
-import { IPurchaseHistory } from './HistoryTab'
 import HistoryCard from './HistoryCard'
+import { IUserOrderHistory } from '@/@types/types';
 
-export default function OrderStatusTab() {
-        const {data,error} = useAllUserOrderQuery({})
+export default function PendingOrderTab() {
+  const status = "pending";
+  const { data, error } = useAllUserOrderQuery(status);
+  
         console.log(error)
-        console.log(data,'from order staus tab')
-        console.log(data?.data,'from order staus tab')
+
   return (
 <div className="w-full mx-auto py-4">
       <Card>
         <CardContent>
           {data?.data?.length > 0 ? (
             <div className="space-y-4">
-              {data.data.map((purchase:IPurchaseHistory) => (
-               <HistoryCard purchase={purchase}/>
+              {data.data.map((purchase:IUserOrderHistory,index:number) => (
+               <HistoryCard purchase={purchase} showActions key={index}/>
               ))}
             </div>
           ) : (

@@ -3,7 +3,7 @@ import AppTabs from '../shared/AppTabs';
 import ProfileSection from '../shared/ProfileSection';
 import BuyerCartTab from './BuyerCartTab';
 import HistoryTab from './HistoryTab';
-import OrderStatusTab from './OrderStatusTab';
+import PendingOrderTab from './PendingOrderTab';
 // import ApiStatusMessage from '../shared/ApiStatusMessage';
 
 export default function BuyerDashboard() {
@@ -11,7 +11,7 @@ export default function BuyerDashboard() {
 
   const tabsData = [
     { label: "All User Cart", value: "User Cart", content: <BuyerCartTab cart={data?.data ?? { items: [] }} /> },
-    { label: "All Pending Order", value: "Pending Order", content: <OrderStatusTab  /> },
+    { label: "All Pending Order", value: "Pending Order", content: <PendingOrderTab  /> },
     { label: "All Order History", value: "History of Order", content: <HistoryTab  /> },
   ];
 

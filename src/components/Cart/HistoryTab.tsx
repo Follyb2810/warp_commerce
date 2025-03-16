@@ -1,6 +1,6 @@
 import { ICartResponseData } from '@/@types/types';
 import { Card, CardContent } from '../ui/card';
-
+import { IUserOrderHistory } from '@/@types/types';
 import { useAllUserOrderQuery } from '@/api/orderService';
 import HistoryCard from './HistoryCard';
 
@@ -8,30 +8,10 @@ export interface CartProps {
   cart?: ICartResponseData;
 }
 
-export interface IPurchaseHistory {
-  _id: string;
-  payment: {
-    amount: number;
-    txHash: string;
-  };
-  items: {
-    product: {
-      _id: string;
-      price: number;
-      stock: number;
-      image_of_land: string;
-    };
-    quantity: number;
-    price: number;
-    _id: string;
-  }[];
-  status: string;
-  totalAmount: number;
-  createdAt: string;
-}
+
 
 export default function HistoryTab() {
-  const { data, error } = useAllUserOrderQuery({});
+  const { data, error } = useAllUserOrderQuery(undefined,{});
 
   console.log(data);
   console.log(data?.data);
@@ -43,8 +23,8 @@ export default function HistoryTab() {
         <CardContent>
           {data?.data?.length > 0 ? (
             <div className="space-y-4">
-              {data.data.map((purchase:IPurchaseHistory) => (
-               <HistoryCard purchase={purchase}/>
+              {data.data.map((purchase:IUserOrderHistory,index:number) => (
+               <HistoryCard purchase={purchase} key={index}/>
               ))}
             </div>
           ) : (

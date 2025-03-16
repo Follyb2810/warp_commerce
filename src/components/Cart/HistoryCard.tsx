@@ -1,27 +1,75 @@
 import { useState } from "react";
-import { IPurchaseHistory } from "./HistoryTab";
 import AppButton from "../shared/AppButton";
 import { Copy } from "lucide-react";
 import { maskAddress } from "@/utils/maskAddress";
 import { RootState, useAppSelector } from "@/store";
-import { releaseFunds } from "@/utils/escrowService";
+import { cancelEscrow, releaseFunds } from "@/utils/escrowService";
+import { IApiResponse, IUserOrderHistory } from "@/@types/types";
+import { useUpdateOrderStatusMutation } from "@/api/orderService";
 
-export default function HistoryCard({ purchase }: { purchase: IPurchaseHistory }) {
+interface HistoryCardProps {
+  purchase: IUserOrderHistory;
+  showActions?: boolean;
+}
+
+export default function HistoryCard({ purchase, showActions = false }: HistoryCardProps) {
   const [copied, setCopied] = useState(false);
   const { user } = useAppSelector((state: RootState) => state.auth);
   const [error, setError] = useState("");
+  const [releaseFund, { isLoading }] = useUpdateOrderStatusMutation();
 
-  const handleReleaseFunds = () => {
-    if (!user?.walletAddress) {
-      setError("Wallet address is required to release funds.");
-      return;
+  const handleReleaseFunds = async () => {
+    try {
+      if (!user?.walletAddress) {
+        setError("Wallet address is required to release funds.");
+        return;
+      }
+      setError("");
+
+      const releaseFundResult = await releaseFunds(user.walletAddress);
+
+      if (releaseFundResult?.transactionHash) {
+        const response: IApiResponse = await releaseFund({
+          status: "release",
+          orderId: purchase._id,
+        }).unwrap();
+
+        console.log("Order status updated:", response);
+      } else {
+        console.log("Release fund failed: Transaction failed");
+      }
+    } catch (error) {
+      console.error("Error releasing funds:", error);
+      setError("Failed to release funds. Please try again.");
     }
-    setError("");
-    releaseFunds(user.walletAddress);
+  };
+  const handleCancelOrder = async () => {
+    try {
+      if (!user?.walletAddress) {
+        setError("Wallet address is required to release funds.");
+        return;
+      }
+      setError("");
+
+      const cancelFundofOrderResult = await cancelEscrow(user.walletAddress);
+
+      if (cancelFundofOrderResult?.transactionHash) {
+        const response: IApiResponse = await releaseFund({
+          status: "canceled",
+          orderId: purchase._id,
+        }).unwrap();
+
+        console.log("Order status updated:", response);
+      } else {
+        console.log("Release fund failed: Transaction failed");
+      }
+    } catch (error) {
+      console.error("Error releasing funds:", error);
+      setError("Failed to release funds. Please try again.");
+    }
   };
 
   const { txHash, amount } = purchase.payment;
-  const showButtons = purchase.status.toLowerCase() === "pending";
 
   const handleCopy = async () => {
     try {
@@ -69,24 +117,31 @@ export default function HistoryCard({ purchase }: { purchase: IPurchaseHistory }
             <div>
               <p className="font-semibold">Price: {item?.price} NTRN</p>
               <p>Quantity: {item.quantity}</p>
-              <p>Stock: {item.product?.stock}</p>
+              {/* <p>Stock: {item.product?.stock}</p> */}
             </div>
           </div>
         ))}
       </div>
 
-      {showButtons && (
+      {showActions && (
         <div className="mt-4 flex gap-4">
-          <AppButton className="bg-red-500 text-white hover:bg-red-600 px-4 py-2 rounded" label="Cancel Order"/>
+          <AppButton 
+          className="bg-red-500 text-white hover:bg-red-600 px-4 py-2 rounded" 
+          isLoading={isLoading}
+            disabled={isLoading || !user?.walletAddress}
+          onClick={handleCancelOrder}
+           label="Cancel Order" 
+          />
           <AppButton
             className="bg-green-500 text-white hover:bg-green-600 px-4 py-2 rounded"
             onClick={handleReleaseFunds}
-            disabled={!user?.walletAddress}
+            disabled={isLoading || !user?.walletAddress}
             label="Release Fund"
+            isLoading={isLoading}
           />
         </div>
       )}
-      
+
       {error && <p className="text-red-500 mt-2">{error}</p>}
     </div>
   );

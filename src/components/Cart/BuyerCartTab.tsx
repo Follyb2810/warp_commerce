@@ -11,29 +11,40 @@ interface CartProps {
 }
 
 export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
-  const [itemQuantities, setItemQuantities] = useState<Record<string, number>>({});
-  
+  const [itemQuantities, setItemQuantities] = useState<Record<string, number>>(
+    {}
+  );
+
   useEffect(() => {
     const initialQuantities: Record<string, number> = {};
-    cart.items.forEach(item => {
+    cart.items.forEach((item) => {
       initialQuantities[item._id] = item.quantity;
     });
     setItemQuantities(initialQuantities);
   }, [cart.items]);
-  
-  const { handleRemoveCart, handleClearCart, removeLoad,deleteLoad,handleBuyFromCart,buyLoad,orderConfirmLoad,keepLoad } = useCartActions();
+
+  const {
+    handleRemoveCart,
+    handleClearCart,
+    removeLoad,
+    deleteLoad,
+    handleBuyFromCart,
+    buyLoad,
+    orderConfirmLoad,
+    keepLoad,
+  } = useCartActions();
 
   const incrementItem = (itemId: string) => {
-    setItemQuantities(prev => ({
+    setItemQuantities((prev) => ({
       ...prev,
-      [itemId]: (prev[itemId] || 0) + 1
+      [itemId]: (prev[itemId] || 0) + 1,
     }));
   };
-  
+
   const decrementItem = (itemId: string) => {
-    setItemQuantities(prev => ({
+    setItemQuantities((prev) => ({
       ...prev,
-      [itemId]: prev[itemId] > 0 ? prev[itemId] - 1 : 0
+      [itemId]: prev[itemId] > 0 ? prev[itemId] - 1 : 0,
     }));
   };
 
@@ -44,8 +55,6 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
       console.error("Product ID is undefined");
     }
   };
-
-
 
   const calculateItemTotal = (item: CartItem) => {
     const quantity = itemQuantities[item._id] || item.quantity;
@@ -65,7 +74,10 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
           {cart.items.length > 0 ? (
             <div className="space-y-4">
               {cart.items.map((item: CartItem, index: number) => (
-                <div key={`${item._id}-${index}`} className="flex items-center gap-4 border-b pb-4">
+                <div
+                  key={`${item._id}-${index}`}
+                  className="flex items-center gap-4 border-b pb-4"
+                >
                   <img
                     src={item.product.image_of_land}
                     alt={item.product.title}
@@ -73,8 +85,20 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
                   />
                   <div className="flex-1">
                     <h3 className="font-semibold">{item.product.title}</h3>
-                    <p className="text-sm text-gray-600">{item.product.description}</p>
-                    <p className="font-semibold text-lg">${calculateItemTotal(item)}</p>
+                    <p className="text-sm text-gray-600">
+                      {item.product.description}
+                    </p>
+                    <p className="font-semibold text-lg">
+                      ${calculateItemTotal(item)}
+                    </p>
+                    {item.product.stock >=
+                    (itemQuantities[item._id] || item.quantity) ? (
+                      <p className="text-green-500 text-xs">
+                        IN STOCK ({item.product.stock} available)
+                      </p>
+                    ) : (
+                      <p className="text-red-500 text-xs">OUT OF STOCK</p>
+                    )}
 
                     <QuantitySelector
                       quantity={itemQuantities[item._id] || item.quantity}
@@ -85,14 +109,24 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
 
                   <div className="flex flex-col space-y-2">
                     <AppButton
-                      onClick={() => handleBuyFromCart(item?.product?._id, itemQuantities[item._id] || item.quantity)}
+                      onClick={() =>
+                        handleBuyFromCart(
+                          item?.product?._id,
+                          itemQuantities[item._id] || item.quantity
+                        )
+                      }
                       className="px-4 py-2 w-full"
                       label="Buy"
                       isLoading={buyLoad || orderConfirmLoad || keepLoad}
                     />
 
                     <AppButton
-                      onClick={() => handleRemoveItem(item?.product?._id, itemQuantities[item._id] || item.quantity)}
+                      onClick={() =>
+                        handleRemoveItem(
+                          item?.product?._id,
+                          itemQuantities[item._id] || item.quantity
+                        )
+                      }
                       className="px-4 py-2 w-full bg-red-500 hover:bg-red-600"
                       label="Remove"
                       isLoading={removeLoad}
@@ -102,8 +136,14 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
               ))}
 
               <div className="flex justify-between items-center pt-4">
-                <span className="text-xl font-bold">Total: ${calculateCartTotal()}</span>
-                <AppButton onClick={onCheckout} className="px-6 py-2" label="Checkout"/>
+                <span className="text-xl font-bold">
+                  Total: ${calculateCartTotal()}
+                </span>
+                <AppButton
+                  onClick={onCheckout}
+                  className="px-6 py-2"
+                  label="Checkout"
+                />
               </div>
 
               <div className="pt-4 flex justify-end">

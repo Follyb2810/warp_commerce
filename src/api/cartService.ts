@@ -23,8 +23,7 @@ export const cartService = baseDomain.injectEndpoints({
         body: { productId, quantity },
       }),
       // providesTags: [],
-      invalidatesTags: ["Cart"],
-      //   invalidatesTags: ( { id }) => [{ type: 'Get_in_Touch', id }],
+        invalidatesTags: ( { productId }) => [{ type: 'Cart', id :productId}],
     }),
 
     removeFromCart: build.mutation({

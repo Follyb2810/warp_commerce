@@ -109,6 +109,27 @@ export interface IProduct  {
   name?: string;
   description?: string;
 }
+export interface IUserOrderHistory {
+  _id: string;
+  payment: {
+    amount: number;
+    txHash: string;
+  };
+  items: {
+    product: {
+      _id: string;
+      price: number;
+      stock: number;
+      image_of_land: string;
+    };
+    quantity: number;
+    price: number;
+    _id: string;
+  }[];
+  status: string;
+  totalAmount: number;
+  createdAt: string;
+}
  
 /**
 * * learn  ReturnType

@@ -5,74 +5,78 @@ import { confirmOrder } from "@/utils/orderConfirm";
 import { initEscrow } from "@/utils/escrowService";
 import { useOrderPaymentConfirmMutation } from "@/api/orderService";
 import { RootState, useAppSelector } from "@/store";
+import { useToast } from "./useToast";
 
 export function useCartActions() {
   const [removeCart, { isLoading: removeLoad }] = useRemoveFromCartMutation();
   const [deleteCart, { isLoading: deleteLoad }] = useDeleteFromCartMutation();
-  const [keepLoad,setKeepLoad] = useState(false)
-  
+  const [keepLoad, setKeepLoad] = useState(false);
   const [buyFromCart, { isLoading: buyLoad }] = useBuyFromCartMutation();
-    const [orderConfirm, { isLoading: orderConfirmLoad }] = useOrderPaymentConfirmMutation();
-    const { user } = useAppSelector((state: RootState) => state.auth);
-  
+  const [orderConfirm, { isLoading: orderConfirmLoad }] = useOrderPaymentConfirmMutation();
+  const { user } = useAppSelector((state: RootState) => state.auth);
+  const toast  = useToast();
 
   const handleRemoveCart = useCallback(async (productId: string, quantity: number) => {
-    console.log({productId})
-    console.log(quantity)
     try {
       const response: IApiResponse = await removeCart({ productId, quantity }).unwrap();
+      toast.success(response.message || "Item was successfully removed from your cart.!");
       console.log("Removed:", response);
     } catch (error) {
       console.error("Error removing item:", error);
+      toast.error("Failed to remove item from cart.");
     }
-  }, [removeCart]);
-  
+  }, [removeCart, toast]);
+
   const handleClearCart = useCallback(async (cartId: string) => {
-    console.log({cartId})
     try {
       const response: IApiResponse = await deleteCart({ cartId }).unwrap();
+      toast.success(response.message || "All items have been removed from your cart.");
       console.log("Removed:", response);
     } catch (error) {
-      console.error("Error removing item:", error);
+      console.error("Error clearing cart:", error);
+      toast.error("Failed to clear the cart.");
     }
-  }, [deleteCart]);
-  
+  }, [deleteCart, toast]);
+
   const handleBuyFromCart = useCallback(async (productId: string, quantity: number) => {
-    console.log({ productId, quantity });
     setKeepLoad(true);
     
     try {
       const response: IApiResponse = await buyFromCart({ productId, quantity }).unwrap();
       console.log("buy from cart:", response);
-  
+
       if (response.status === 200) {
+        toast.success(response.message || "Proceeding with payment...");
         const available = response.data as IAvailableOrder;
         const { totalAmount, sellerAddress } = available;
-  
+
         console.log("Order details:", available);
         console.log("Processing payment...");
-  
+
         const escrowResult = await initEscrow(
           user!.walletAddress,
           totalAmount.toString(),
           sellerAddress
         );
-  
+
         if (escrowResult && escrowResult.transactionHash) {
           await confirmOrder(orderConfirm, productId, quantity, escrowResult.transactionHash);
+          toast.success("Your order has been placed successfully.");
         } else {
           console.error("Escrow transaction failed. Order confirmation skipped.");
+          toast.error("Escrow transaction could not be completed.");
         }
       } else {
-        console.log("Order availability response:", response);
+        toast.error("The selected item is not available for purchase.");
       }
     } catch (error) {
-      console.error("Error removing item:", error);
+      console.error("Error processing purchase:", error);
+      toast.error("An error occurred while processing your order.");
     } finally {
-      setKeepLoad(false); 
+      setKeepLoad(false);
+      toast.dismiss()
     }
-  }, [buyFromCart, orderConfirm, user]);
-  
+  }, [buyFromCart, orderConfirm, user, toast]);
 
-  return { handleRemoveCart, removeLoad,deleteLoad,handleClearCart,handleBuyFromCart ,buyLoad,orderConfirmLoad,keepLoad};
+  return { handleRemoveCart, removeLoad, deleteLoad, handleClearCart, handleBuyFromCart, buyLoad, orderConfirmLoad, keepLoad };
 }
