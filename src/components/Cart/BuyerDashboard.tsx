@@ -11,17 +11,17 @@ export default function BuyerDashboard() {
 
   const tabsData = [
     { label: "All User Cart", value: "User Cart", content: <BuyerCartTab cart={data?.data ?? { items: [] }} /> },
-    { label: "All Order History", value: "reviews", content: <HistoryTab cart={data?.data ?? { items: [] }} /> },
-    { label: "All Order ", value: "All Order", content: <OrderStatusTab  /> },
+    { label: "All Pending Order", value: "Pending Order", content: <OrderStatusTab  /> },
+    { label: "All Order History", value: "History of Order", content: <HistoryTab  /> },
   ];
 
   return (
-    <div className="container mx-auto px-4 py-10">
+    <div className="container mx-auto  py-10 w-full">
       <h1 className="text-2xl font-bold mb-6">Buyer Account</h1>
 
       {/* <ApiStatusMessage isLoading={isLoading} error={error} /> */}
 
-      <div className="flex flex-col md:flex-row gap-6">
+      <div className="flex flex-col md:flex-row gap-6 w-full">
         <ProfileSection />
         <AppTabs tabs={tabsData} defaultValue={tabsData[0]?.value} />
         {/* {!isLoading && !error && <AppTabs tabs={tabsData} defaultValue={tabsData[0]?.value} />} */}

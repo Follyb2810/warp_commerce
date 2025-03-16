@@ -18,7 +18,7 @@ export default function ProductInfo({
   _id,
   document_of_land,
 }: ProductInfoProps) {
-  const { quantity, increment, decrement, isAddingToCart, orderLoad, orderPayConfirm, handleAddToCart, handleBuyOrder } =
+  const { quantity, increment, decrement, isAddingToCart, orderLoad, orderConfirmLoad, handleAddToCart, handleBuyOrder,keepLoad } =
     useProductActions(_id);
 
   return (
@@ -56,7 +56,7 @@ export default function ProductInfo({
 
       <div className="flex flex-col sm:flex-row gap-3 mt-6">
         <AppButton label="Add To Cart" isLoading={isAddingToCart} onClick={handleAddToCart} disabled={quantity === 0} />
-        <AppButton label="Buy Now" disabled={quantity === 0} onClick={handleBuyOrder} isLoading={orderLoad && orderPayConfirm} />
+        <AppButton label="Buy Now" disabled={quantity === 0} onClick={handleBuyOrder} isLoading={orderLoad || orderConfirmLoad || keepLoad} />
       </div>
     </div>
   );

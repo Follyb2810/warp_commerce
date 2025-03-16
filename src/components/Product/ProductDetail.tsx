@@ -17,7 +17,9 @@ export default function ProductDetail({
   const { isLoading, data, error } = useSingleProductQuery(productId, {
     skip: !productId,
   });
-
+  
+  console.log(data,'useSingleProductQuery')
+  
   console.log(productId, "productId");
   console.log(data?.data?.product);
 

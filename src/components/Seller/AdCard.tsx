@@ -1,13 +1,43 @@
-import { Button } from "../ui/button";
 
-const AdCard = ({ ad }: { ad: { id: number; title: string; published: string; image: string } }) => (
-    <div className="flex items-center gap-4">
-      <img src={ad.image} alt={ad.title} className="w-16 h-16 rounded-lg object-cover" />
-      <div className="flex-1">
-        <h3 className="font-medium">{ad.title}</h3>
-        <p className="text-sm text-gray-500">📅 Published {ad.published}</p>
-      </div>
-      <Button variant="outline" size="sm">View Details</Button>
-    </div>
-  );
+import { IApiResponse } from "@/@types/types";
+import AppButton from "../shared/AppButton";
+import { useDeleteProductMutation } from "@/api/prodService";
+
+
+export type IAddCardProps = {
+  title:string,
+  image_of_land:string,
+  price:number;
+  stock:number;
+  _id?: string;
+}
+
+const AdCard = ({title,image_of_land,stock,_id,price}:IAddCardProps) =>{
+  const [deleteProduct,{isLoading:loadDelete}] = useDeleteProductMutation()
+  
+  
+  const handleProductDelete =async(productId:string)=>{
+    console.log(productId,'productId')
+   try {
+    const result :IApiResponse = await deleteProduct({productId}).unwrap()
+    console.log(result)
+   } catch (error) {
+    console.log(error)
+   }
+  }
+  return(
+     <section className="flex items-center gap-4">
+       <img src={image_of_land} alt={title} className="w-24 h-24 rounded-lg object-cover" />
+       <div className="flex-1">
+         <h3 className="font-medium">{title}</h3>
+         <h3 className="font-medium text-red-500">Price NTRN {price}</h3>
+         <p className="text-sm text-green-400">Available stock {stock}</p>
+       </div>
+       <div className="flex flex-col gap-2">
+       <AppButton label="View Details" onClick={()=>console.log(`${_id}`)} variant="outline" size="sm"/>
+       <AppButton label="Delete Product" onClick={()=>handleProductDelete(`${_id}`)} variant="destructive" size="sm" isLoading={loadDelete}/>
+       </div>
+     </section>
+   );
+}
 export default AdCard

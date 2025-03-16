@@ -7,8 +7,8 @@ import PostAdForm from "./PostAdForm";
 export default function SellerDashbaord() {
   
   const tabsData = [
-      { label: "All User Cart", value: "User Cart", content: <LiveAdsSection /> },
-      { label: "Create PostAdForm", value: "PostAdForm", content: <PostAdForm /> },
+      { label: "Active Ads", value: "LiveAds", content: <LiveAdsSection /> },
+      { label: "Post Ads", value: "PostAdForm", content: <PostAdForm /> },
     
     ];
   return (

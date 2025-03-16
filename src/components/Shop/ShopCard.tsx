@@ -20,13 +20,6 @@ export default function ShopCard({
   stock,
   _id
 }: ShopCardProps) {
-  // const [quantity, setQuantity] = useState(0);
-  //   const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
-  // const increment = () => setQuantity((prev) => prev + 1);
-  // const decrement = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
-  // const addToCart = () => {
-  //   console.log(`Added ${quantity} ${title} to cart`);
-  // };
 
   return (
     <Link to={`/shop/${_id}`} className="border p-4 rounded-lg shadow-sm bg-white relative cursor-pointer">
@@ -49,11 +42,11 @@ export default function ShopCard({
       <div className="flex items-center space-x-2 mt-2">
         {discountPrice ? (
           <>
-            <p className="text-red-500 font-bold">${discountPrice.toFixed(2)}</p>
-            <p className="line-through text-gray-400 text-sm">${price.toFixed(2)}</p>
+            <p className="text-red-500 font-bold">${discountPrice}</p>
+            <p className="line-through text-gray-400 text-sm">${price}</p>
           </>
         ) : (
-          <p className="font-bold">${price.toFixed(2)}</p>
+          <p className="font-bold">${price}</p>
         )}
       </div>
 

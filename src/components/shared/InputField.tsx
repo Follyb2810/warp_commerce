@@ -87,9 +87,12 @@ export function InputField({
               onFocus={onFocus}
               className={`bg-[#F9F9F9] dark:bg-gray-800 text-black dark:text-white py-6 pr-10 ${borderColor} ${className}`}
               autoComplete={type === "password" ? "current-password" : "new-password"}
+              step={type === "number" ? "0.0001" : undefined}
+              min={type === "number" ? "0" : undefined}
+              
             />
 
-            {/* Custom Icon (if provided) */}
+
             {icon && (
               <Button
                 type="button"

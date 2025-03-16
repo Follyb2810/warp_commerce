@@ -3,19 +3,20 @@ import { IApiResponse, IAvailableOrder } from "@/@types/types";
 import { useAddToCartMutation } from "@/api/cartService";
 import { useOrderAvailableMutation, useOrderPaymentConfirmMutation } from "@/api/orderService";
 import { RootState, useAppSelector } from "@/store";
-import { initEscrow } from "@/utils/initEscrow";
 import { confirmOrder } from "@/utils/orderConfirm";
+import { initEscrow } from "@/utils/escrowService";
 
 export const useProductActions = (_id: string) => {
   const [quantity, setQuantity] = useState(1);
-  const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
+  const [keepLoad,setKeepLoad] = useState(false)
+
 
   const increment = () => setQuantity((prev) => prev + 1);
   const decrement = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
 
   const [addToCart, { isLoading }] = useAddToCartMutation();
   const [orderAvailable, { isLoading: orderLoad }] = useOrderAvailableMutation();
-  const [orderConfirm, { isLoading: orderPayConfirm }] = useOrderPaymentConfirmMutation();
+  const [orderConfirm, { isLoading: orderConfirmLoad }] = useOrderPaymentConfirmMutation();
   
   const { user } = useAppSelector((state: RootState) => state.auth);
 
@@ -32,6 +33,7 @@ export const useProductActions = (_id: string) => {
 
   const handleBuyOrder = useCallback(async () => {
     try {
+      setKeepLoad(true)
       const response: IApiResponse = await orderAvailable({ productId: _id, quantity }).unwrap();
       
       if (response.status === 200) {
@@ -43,7 +45,6 @@ export const useProductActions = (_id: string) => {
 
         const escrowResult = await initEscrow(
           user!.walletAddress,
-          contractAddress,
           totalAmount.toString(),
           sellerAddress
         );
@@ -58,8 +59,10 @@ export const useProductActions = (_id: string) => {
       }
     } catch (error) {
       console.error("Error processing order:", error);
+    } finally {
+      setKeepLoad(false); 
     }
-  }, [_id, quantity, orderAvailable, orderConfirm, contractAddress,user]);
+  }, [_id, quantity, orderAvailable, orderConfirm,user]);
 
   return {
     quantity,
@@ -67,9 +70,10 @@ export const useProductActions = (_id: string) => {
     decrement,
     isAddingToCart,
     orderLoad,
-    orderPayConfirm,
+    orderConfirmLoad,
     handleAddToCart,
     handleBuyOrder,
+    keepLoad
   };
 };
 

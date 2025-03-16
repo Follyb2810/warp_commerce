@@ -53,7 +53,7 @@ export interface IProduct  {
     seller?:ISellerId;
     stock: number;
     address:string;
-    mapping_location:string;
+    mapping_location:IMapingLocation;
     image_of_land:string;
     size_of_land:string;
     document_of_land:string;
@@ -78,7 +78,7 @@ export interface IProduct  {
   
   export interface CartItem {
     _id: string;
-    product: Partial<IProduct>;
+    product: IProduct;
     quantity: number;
     price: number;
   }
@@ -88,6 +88,48 @@ export interface IProduct  {
     total: number;
     items: CartItem[];
   }
+  
+  export interface ICreateProduct {
+      title: string;
+      description?: string;
+      price: string;
+      category?:string;
+      stock: string;
+      address:string;
+      mapping_location:IMapingLocation;
+      image_of_land:File | null;
+      size_of_land:string;
+      document_of_land:string;
+    }
+  
+  export type IMapingLocation = { lat:number, lng: number }
+  
+ export interface ICategory {
+  _id: string;
+  name?: string;
+  description?: string;
+}
+ 
+/**
+* * learn  ReturnType
+ */
+//? type ReturnType<T> = T extends (...args: any[]) => infer R ? R : any;
+// function getUser() {
+//   return { id: 1, name: "Alice" };
+// }
+
+// type UserType = ReturnType<typeof getUser>; 
+
+// UserType = { id: number; name: string }
+
+//? 
+// const add = (a: number, b: number): number => a + b;
+
+// type AddReturnType = ReturnType<typeof add>;
+// // AddReturnType = number
+
+
+  
   // export type ICart = Partial<IProduct> & { quantity?: number };
   // export type ICart = Partial<IProduct>;
   //? Remove 'description' and 'stock' from IProduct

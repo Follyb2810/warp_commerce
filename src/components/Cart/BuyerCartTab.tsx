@@ -21,7 +21,7 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
     setItemQuantities(initialQuantities);
   }, [cart.items]);
   
-  const { handleRemoveCart, handleClearCart, removeLoad,deleteLoad } = useCartActions();
+  const { handleRemoveCart, handleClearCart, removeLoad,deleteLoad,handleBuyFromCart,buyLoad,orderConfirmLoad,keepLoad } = useCartActions();
 
   const incrementItem = (itemId: string) => {
     setItemQuantities(prev => ({
@@ -45,9 +45,7 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
     }
   };
 
-  const handleBuy = (itemId: string) => {
-    alert(`Buy ${itemId}`);
-  };
+
 
   const calculateItemTotal = (item: CartItem) => {
     const quantity = itemQuantities[item._id] || item.quantity;
@@ -61,7 +59,7 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
   };
 
   return (
-    <div className="w-full max-w-3xl mx-auto p-4">
+    <div className="w-full mx-auto py-4">
       <Card>
         <CardContent>
           {cart.items.length > 0 ? (
@@ -87,9 +85,10 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
 
                   <div className="flex flex-col space-y-2">
                     <AppButton
-                      onClick={() => handleBuy(item._id)}
+                      onClick={() => handleBuyFromCart(item?.product?._id, itemQuantities[item._id] || item.quantity)}
                       className="px-4 py-2 w-full"
                       label="Buy"
+                      isLoading={buyLoad || orderConfirmLoad || keepLoad}
                     />
 
                     <AppButton

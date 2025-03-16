@@ -3,6 +3,7 @@ import AppButton from "./AppButton";
 import { RootState, useAppSelector } from "@/store";
 import { WalletConnect } from "../Wallet/WalletConnect";
 import { IProduct } from "@/@types/types";
+import { useProductActions } from "@/hooks/useProductActions";
 
 export interface PropertyCardProps extends IProduct {
   discount?: number;
@@ -15,18 +16,19 @@ export interface PropertyCardProps extends IProduct {
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
   image_of_land,
-  discount = 20,
+  discount ,
   oldPrice,
   newPrice,
   title,
   mapping_location,
   reviews,
-  onPress,
   price,
   stock,
   isAddToCart = false,
+  _id
 }) => {
   const { isAuthenticated } = useAppSelector((state: RootState) => state.auth);
+  const {isAddingToCart,handleAddToCart} = useProductActions(_id)
 
   return (
     <Card className="border border-gray-200 shadow-md rounded-lg overflow-hidden p-0">
@@ -45,22 +47,23 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       </div>
 
       <CardContent className="px-4 py-2">
-        <p className="text-gray-500 text-sm">{mapping_location}</p>
         <h3 className="text-lg font-semibold">{title}</h3>
+        <p className="text-gray-500 text-sm">Lat:{mapping_location.lat}</p>
+        <p className="text-gray-500 text-sm">Lng:{mapping_location.lng}</p>
 
         <div className="flex items-center gap-2 mt-2">
           {oldPrice && (
             <span className="text-gray-400 line-through text-sm">
-              ${oldPrice.toFixed(2)}
+             <small className="text-sm">NTRN</small> {oldPrice}
             </span>
           )}
           {newPrice ? (
             <span className="text-red-500 text-lg font-bold">
-              ${newPrice.toFixed(2)}
+              <small className="text-sm">NTRN</small> {newPrice}
             </span>
           ) : (
             <span className="text-red-500 text-lg font-bold">
-              ${price.toFixed(2)}
+              <small className="text-sm">NTRN</small> {price}
             </span>
           )}
         </div>
@@ -74,7 +77,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           isAuthenticated ? (
             <AppButton
               label={"Add To Cart"}
-              onClick={onPress}
+              isLoading={isAddingToCart}
+              onClick={handleAddToCart}
               className="bg-warp-200 text-black w-full mt-3"
             />
           ) : (

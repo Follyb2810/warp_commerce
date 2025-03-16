@@ -40,11 +40,11 @@ export const orderService = baseDomain.injectEndpoints({
     //  query :()=>'/product' ,
     //  providesTags: ['Product'],
     // }),
-    SingleProduct: build.query({
-      query: (id) => `/order/${id}`,
-      providesTags: ["Order"],
-      // invalidatesTags : ['Blogs'],
-    }),
+    // SingleProduct: build.query({
+    //   query: (id) => `/order/${id}`,
+    //   providesTags: ["Order"],
+    //   // invalidatesTags : ['Blogs'],
+    // }),
     OrderHistory: build.query({
       query: () => "/order",
       providesTags: ["Order"],

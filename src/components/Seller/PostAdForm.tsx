@@ -1,10 +1,18 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useMemo, useState } from "react";
+import "leaflet/dist/leaflet.css";
 import { Card } from "@/components/ui/card";
 import { Image, X } from "lucide-react";
 import { InputField } from "../shared/InputField";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import MapComponent from "../shared/MapComponent";
+import {
+  useCreateProductMutation,
+  useGetCategoryQuery,
+} from "@/api/prodService";
+import AppButton from "../shared/AppButton";
+import { IApiResponse, ICategory } from "@/@types/types";
+import SelectField from "../shared/SelectField";
 
 export default function PostAdForm() {
   const [formData, setFormData] = useState({
@@ -14,7 +22,7 @@ export default function PostAdForm() {
     category: "",
     stock: "",
     address: "",
-    mapping_location: "",
+    mapping_location: { lat: 0, lng: 0 },
     description: "",
     document_of_land: null as File | null,
     image_of_land: null as File | null,
@@ -22,8 +30,21 @@ export default function PostAdForm() {
 
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [documentError, setDocumentError] = useState("");
+  const [createProduct, { isLoading }] = useCreateProductMutation();
+  const { data } = useGetCategoryQuery({});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const formattedCategories = useMemo(() => {
+    return (
+      data?.data?.map((item: ICategory) => ({
+        value: item._id,
+        label: item.name,
+      })) || []
+    );
+  }, [data]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -49,58 +70,185 @@ export default function PostAdForm() {
     }
   };
 
+  const handleLocationSelect = (lat: number, lng: number) => {
+    setFormData({ ...formData, mapping_location: { lat, lng } });
+  };
+
   const removeImage = () => {
     setImagePreview(null);
     setFormData({ ...formData, image_of_land: null });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+      
+      if (!formData.mapping_location) {
+        return alert("Please select a location");
+      }
+  
+      const formDataToSend = new FormData();
+      formDataToSend.append("title", formData.title);
+      formDataToSend.append("size_of_land", formData.size_of_land);
+      formDataToSend.append("price", formData.price);
+      formDataToSend.append("category", formData.category);
+      formDataToSend.append("stock", formData.stock);
+      formDataToSend.append("address", formData.address);
+      formDataToSend.append(
+        "mapping_location",
+        JSON.stringify(formData.mapping_location)
+      );
+      formDataToSend.append("description", formData.description);
+  
+      if (formData.image_of_land) {
+        formDataToSend.append("image_of_land", formData.image_of_land);
+      }
+  
+      if (formData.document_of_land) {
+        formDataToSend.append("document_of_land", formData.document_of_land);
+      }
+  
+      console.log("Submitting FormData:", formDataToSend);
+      
+      const result: IApiResponse = await createProduct(formDataToSend).unwrap();
+      console.log("API Response:", result);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
+  
 
   return (
-    <form className="container mx-auto px-6 py-10 max-w-3xl bg-white shadow-md rounded-lg" onSubmit={handleSubmit}>
+    <form
+      className="container mx-auto  py-10 w-full bg-white shadow-md rounded-lg"
+      onSubmit={handleSubmit}
+    >
       <div className="space-y-6">
         <Card className="p-4 border">
           <h2 className="text-lg font-semibold border-b pb-2">Post An Ad</h2>
 
-          <InputField id="title" label="Title" placeholder="Enter title" required value={formData.title} onChange={handleChange} />
+          <InputField
+            id="title"
+            label="Title"
+            placeholder="Enter title"
+            required
+            value={formData.title}
+            onChange={handleChange}
+          />
 
           <div className="grid grid-cols-2 gap-4 mt-4">
-            <InputField id="size_of_land" label="Land Size" placeholder="Enter land size" required value={formData.size_of_land} onChange={handleChange} />
-            <InputField id="price" label="Price (USD)" placeholder="Enter price" required value={formData.price} onChange={handleChange} />
+            <InputField
+              id="size_of_land"
+              label="Land Size"
+              placeholder="Enter land size"
+              required
+              value={formData.size_of_land}
+              onChange={handleChange}
+            />
+            <InputField
+              id="price"
+              type="number"
+              label="Price (NTRN)"
+              placeholder="Enter price"
+              required
+              value={formData.price}
+              onChange={handleChange}
+            />
           </div>
 
           <div className="grid grid-cols-2 gap-4 mt-4">
-            <InputField id="category" label="Category" placeholder="Enter category" required value={formData.category} onChange={handleChange} />
-            <InputField id="stock" label="Stock" type="number" placeholder="Enter stock" required value={formData.stock} onChange={handleChange} />
+            <SelectField
+              options={formattedCategories}
+              placeholder="Select a category"
+              onChange={(value) =>
+                setFormData({ ...formData, category: value })
+              }
+              defaultValue={formData.category}
+            />
+
+            {/* <InputField id="category" label="Category" placeholder="Enter category" required value={formData.category} onChange={handleChange} /> */}
+            <InputField
+              id="stock"
+              label="Stock"
+              type="number"
+              placeholder="Enter stock"
+              required
+              value={formData.stock}
+              onChange={handleChange}
+            />
           </div>
 
-          <InputField id="address" label="Address" placeholder="Enter address" required value={formData.address} onChange={handleChange} className="mt-4" />
-          <InputField id="mapping_location" label="Mapping Location" placeholder="Enter mapping location" required value={formData.mapping_location} onChange={handleChange} className="mt-4" />
+          <InputField
+            id="address"
+            label="Address"
+            placeholder="Enter address"
+            required
+            value={formData.address}
+            onChange={handleChange}
+            className="mt-4"
+          />
+        </Card>
+
+        <Card className="p-4 border">
+          <h2 className="text-lg font-semibold border-b pb-2">
+            Select Mapping Location
+          </h2>
+          <div className="h-64 w-full border mt-4 rounded-lg overflow-hidden">
+            <MapComponent onLocationSelect={handleLocationSelect} />
+          </div>
+          <p className="text-sm text-gray-600 mt-2">
+            Selected Location: {formData.mapping_location.lat},{" "}
+            {formData.mapping_location.lng}
+          </p>
         </Card>
 
         <Card className="p-4 border">
           <h2 className="text-lg font-semibold border-b pb-2">Description</h2>
-          <InputField id="description" type="textarea" label="Description" placeholder="Enter a detailed description..." required value={formData.description} onChange={handleChange} className="mt-4 h-32" />
+          <InputField
+            id="description"
+            type="textarea"
+            label="Description"
+            placeholder="Enter a detailed description..."
+            required
+            value={formData.description}
+            onChange={handleChange}
+            className="mt-4 h-32"
+          />
         </Card>
 
         <Card className="p-4 border">
           <h2 className="text-lg font-semibold border-b pb-2">Upload Files</h2>
 
-          <Input id="image_of_land" name="image_of_land" type="file" accept="image/*" required className="mt-2" onChange={handleImageChange} />
+          <Input
+            id="image_of_land"
+            name="image_of_land"
+            type="file"
+            accept="image/*"
+            required
+            className="mt-2"
+            onChange={handleImageChange}
+          />
           {imagePreview ? (
             <div className="relative mt-4">
-              <img src={imagePreview} alt="Preview" className="w-full h-40 object-cover rounded-lg border" />
-              <button type="button" onClick={removeImage} className="absolute top-2 right-2 bg-white p-1 rounded-full shadow">
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="w-full h-40 object-cover rounded-lg border"
+              />
+              <button
+                type="button"
+                onClick={removeImage}
+                className="absolute top-2 right-2 bg-white p-1 rounded-full shadow"
+              >
                 <X className="w-5 h-5 text-red-500" />
               </button>
             </div>
           ) : (
             <div className="flex items-center justify-center w-full h-40 mt-4 border border-dashed rounded-lg">
               <Image className="w-10 h-10 text-gray-400" />
-              <p className="text-gray-500 text-sm ml-2">Image preview will appear here</p>
+              <p className="text-gray-500 text-sm ml-2">
+                Image preview will appear here
+              </p>
             </div>
           )}
 
@@ -117,14 +265,16 @@ export default function PostAdForm() {
               className="mt-2"
               onChange={handleFileChange}
             />
-            {documentError && <p className="text-red-500 text-sm mt-1">{documentError}</p>}
+            {documentError && (
+              <p className="text-red-500 text-sm mt-1">{documentError}</p>
+            )}
           </div>
         </Card>
       </div>
 
-      <Button type="submit" className="mt-6 w-full">
+      <AppButton isLoading={isLoading} type="submit" className="mt-6 w-full">
         Submit Ad
-      </Button>
+      </AppButton>
     </form>
   );
 }
