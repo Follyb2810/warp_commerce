@@ -12,7 +12,7 @@ export default function Notification() {
     const NotiData = [
       {
         icon: (className: string) => <ShoppingCart className={className} />,
-        count: totalQuantity, 
+        count: 2, 
         path: "/shop/buyer_cart",
       },
       {
