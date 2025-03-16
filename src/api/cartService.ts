@@ -56,7 +56,7 @@ export const cartService = baseDomain.injectEndpoints({
   
     singleProduct: build.query({
       query: (id) => `/product/${id}`,
-      providesTags: (_result, _error, id) => [{ type: "Product", id }],
+      providesTags: (_,__,id) => [{ type: "Product", id }],
     }),
     
   }),

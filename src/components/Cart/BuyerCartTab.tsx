@@ -5,20 +5,28 @@ import { useCartActions } from "@/hooks/useCartActions";
 import { useState, useEffect } from "react";
 import CartItemCard from "./CartItemCard";
 import { useUserCartQuery } from "@/api/cartService";
+import {  useAppDispatch } from "@/store";
+import { setCart } from "@/features/cartSlice";
 
 export default function BuyerCartTab() {
   const [itemQuantities, setItemQuantities] = useState<Record<string, number>>(
     {}
   );
-
+  
+  const dispatch = useAppDispatch()
   const { data } = useUserCartQuery({});
   // const cart = data?.data as ICartResponseData;
   const cart = data?.data as ICartResponseData ?? { items: [] };
 
-  console.log(data,'first data from buyer')
-  console.log(cart,' from the buyer')
-  console.log(cart?.items)
-  console.log(cart?.items)
+  useEffect(() => {
+    if (data?.data?.items) {
+      dispatch(setCart({ items: data.data.items ?? [] }));
+    } else {
+      dispatch(setCart({ items: [] }));
+    }
+  }, [data, dispatch]);
+  
+
   useEffect(() => {
     const initialQuantities: Record<string, number> = {};
     cart?.items.forEach((item) => {

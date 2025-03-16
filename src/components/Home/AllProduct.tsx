@@ -4,11 +4,8 @@ import PropertyCard, { PropertyCardProps } from '../shared/PropertyCard'
 import { useAllProductQuery } from '@/api/prodService'
 
 export default function AllProduct() {
-  const { isLoading, data, status, error } = useAllProductQuery({});
-  console.log(data,'all product');
-  console.log(data?.data,'all product');
-  console.log(status);
-  console.log(isLoading);
+  const { isLoading, data, error } = useAllProductQuery({});
+  
 
   return (
     <div className="md:col-span-3">

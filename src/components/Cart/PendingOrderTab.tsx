@@ -5,10 +5,8 @@ import { IUserOrderHistory } from '@/@types/types';
 
 export default function PendingOrderTab() {
   const status = "pending";
-  const { data, error } = useAllUserOrderQuery(status);
+  const { data } = useAllUserOrderQuery(status);
   
-        console.log(error)
-
   return (
 <div className="w-full mx-auto py-4">
       <Card>

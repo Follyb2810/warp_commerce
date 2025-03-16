@@ -10,10 +10,8 @@ import PropertyCard, { PropertyCardProps } from "../shared/PropertyCard";
 import { useAllProductQuery } from "@/api/prodService";
 
 export function BestSeller() {
-  const { isLoading, data, status, error } = useAllProductQuery({});
-  console.log(data?.data);
-  console.log(status);
-  console.log(isLoading);
+  const { isLoading, data, error } = useAllProductQuery({});
+
   if (isLoading) {
     return <p className="text-center text-gray-500">Loading products...</p>;
   }

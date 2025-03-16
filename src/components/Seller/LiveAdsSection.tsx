@@ -5,13 +5,9 @@ import AdCard, { IAddCardProps } from "./AdCard";
 
 
 const LiveAdsSection = () =>{
-  const {data,error} = useSellerProductQuery({})
+  const {data} = useSellerProductQuery({})
  
   
-  
-  console.log(data?.data?.products)
-  console.log(data?.data)
-  console.log(error)
   return(
     <Card className="w-full">
       <CardContent className="space-y-4">

@@ -1,28 +1,31 @@
 import { Bell, MessageCircle, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-
-const NotiData = [
-  {
-    icon: (className: string) => <ShoppingCart className={className} />,
-    count: 3,
-    path: "/shop/buyer_cart",
-  },
-  {
-    icon: (className: string) => <Bell className={className} />,
-    count: 0,
-    path: "/",
-  },
-  {
-    icon: (className: string) => <MessageCircle className={className} />,
-    count: 5,
-    path: "/",
-  },
-];
+import { RootState, useAppSelector } from "@/store";
 
 export default function Notification() {
   const navigate = useNavigate();
   const location = useLocation();
+    const {value:storeCart,totalQuantity} = useAppSelector((state: RootState) => state.cart); 
+    console.log(storeCart)
+    console.log(storeCart,'totalQuantity')
+    const NotiData = [
+      {
+        icon: (className: string) => <ShoppingCart className={className} />,
+        count: totalQuantity, 
+        path: "/shop/buyer_cart",
+      },
+      {
+        icon: (className: string) => <Bell className={className} />,
+        count: 0,
+        path: "/",
+      },
+      {
+        icon: (className: string) => <MessageCircle className={className} />,
+        count: 5,
+        path: "/",
+      },
+    ];
 
   return (
     <section className="flex gap-3">
@@ -47,6 +50,7 @@ interface IButtonWithIcon<T = void> {
 }
 
 export function ButtonWithIcon({ icon, count, isActive, onPress }: IButtonWithIcon) {
+  
   return (
     <motion.button
       whileHover={{ scale: 1.1 }}

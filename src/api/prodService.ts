@@ -22,14 +22,14 @@ export const prodService = baseDomain.injectEndpoints({
     }),
     SingleProduct: build.query({
       query: (id) => `/product/${id}`,
-      providesTags: (_result, _error, id) => [{ type: "Product", id }],
+      providesTags: (_, __, id) => [{ type: "Product", id }],
     }),
     deleteProduct: build.mutation({
       query: ({ productId }: { productId: string }) => ({
         url: `/product/${productId}`,
         method: "DELETE",
       }),
-      invalidatesTags: (_, _error, { productId }) => [
+      invalidatesTags: (_, __, { productId }) => [
         { type: "Product", id: productId },
         { type: "Product" },
       ],
