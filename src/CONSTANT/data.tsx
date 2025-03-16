@@ -9,11 +9,11 @@ export const navbarItemsContent = {
         },
         {
             name: "Compare",
-            href: "/compare",
+            href: "/",
         },
         {
             name: "Wishlist",
-            href: "/wishlist",
+            href: "/",
         }
     ],
     subtext: "100% Secure delivery without contacting the courier",
@@ -61,15 +61,18 @@ export const headerMenu = [
     },
     {
         name: "Duplex/High Rise",
-        href: "/duplex",
+        href: "/",
+        // href: "/duplex",
     },
     {
         name: "Lands",
-        href: "/lands",
+        href: "/",
+        // href: "/lands",
     },
     {
         name: "Bungalows",
-        href: "/bungalows",
+        href: "/",
+        // href: "/bungalows",
     }
     
 ]

@@ -2,7 +2,10 @@ import AuthClientStore from '@/utils/AuthStore';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import axios from 'axios';
 
-export const baseUrl = 'http://localhost:5000/api';
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+
+export const baseUrl = `${BASE_URL}api`;
+// export const baseUrl = 'http://localhost:5000/api';
 
 export const getAntiForgeryToken = async () => {
   try {

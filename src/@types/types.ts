@@ -25,9 +25,11 @@ export interface CategoryCardProps {
   result: IUserDetails;
 }
 
-export interface IApiResponse {
+export interface IMessage {
   status: number,
   message: string,
+}
+export interface IApiResponse extends IMessage {
   data?: unknown
 }
 
@@ -65,6 +67,13 @@ export interface IProduct  {
   }
 
   export type ICart = Partial<IProduct> & { quantity?: number ,price?:number,};
+
+  // export type ICart = {
+  //   _id: string;
+  //   product: IProduct;
+  //   quantity: number;
+  //   price: number;
+  // };
   
   
   export interface IAvailableOrder {
@@ -87,7 +96,20 @@ export interface IProduct  {
     user: string;
     total: number;
     items: CartItem[];
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
   }
+  // export interface ICartResponseData extends IMessage {
+  //   data: CartData;
+  // }
+  
+    // export interface ICartResponseData {
+    //   _id: string;
+    //   user: string;
+    //   total: number;
+    //   items: CartItem[];
+    // }
   
   export interface ICreateProduct {
       title: string;

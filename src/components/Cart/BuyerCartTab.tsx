@@ -1,27 +1,31 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { CartItem, ICartResponseData } from "@/@types/types";
+import { ICartResponseData } from "@/@types/types";
 import AppButton from "../shared/AppButton";
 import { useCartActions } from "@/hooks/useCartActions";
 import { useState, useEffect } from "react";
-import QuantitySelector from "../shared/QuantitySelector";
+import CartItemCard from "./CartItemCard";
+import { useUserCartQuery } from "@/api/cartService";
 
-interface CartProps {
-  cart: ICartResponseData;
-  onCheckout?: () => void;
-}
-
-export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
+export default function BuyerCartTab() {
   const [itemQuantities, setItemQuantities] = useState<Record<string, number>>(
     {}
   );
 
+  const { data } = useUserCartQuery({});
+  // const cart = data?.data as ICartResponseData;
+  const cart = data?.data as ICartResponseData ?? { items: [] };
+
+  console.log(data,'first data from buyer')
+  console.log(cart,' from the buyer')
+  console.log(cart?.items)
+  console.log(cart?.items)
   useEffect(() => {
     const initialQuantities: Record<string, number> = {};
-    cart.items.forEach((item) => {
+    cart?.items.forEach((item) => {
       initialQuantities[item._id] = item.quantity;
     });
     setItemQuantities(initialQuantities);
-  }, [cart.items]);
+  }, [cart?.items]);
 
   const {
     handleRemoveCart,
@@ -48,91 +52,39 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
     }));
   };
 
-  const handleRemoveItem = (productId?: string, quantity?: number) => {
-    if (productId) {
-      handleRemoveCart(productId, quantity ?? 1);
-    } else {
-      console.error("Product ID is undefined");
-    }
-  };
-
-  const calculateItemTotal = (item: CartItem) => {
-    const quantity = itemQuantities[item._id] || item.quantity;
-    return item.price * quantity;
+  const calculateItemTotal = (itemId: string, price: number) => {
+    const quantity = itemQuantities[itemId] || 1;
+    return price * quantity;
   };
 
   const calculateCartTotal = () => {
+    if (!cart?.items) return 0;
     return cart.items.reduce((total, item) => {
-      return total + calculateItemTotal(item);
+      return total + calculateItemTotal(item._id, item.price);
     }, 0);
   };
 
   return (
     <div className="w-full mx-auto py-4">
       <Card>
+
         <CardContent>
           {cart.items.length > 0 ? (
             <div className="space-y-4">
-              {cart.items.map((item: CartItem, index: number) => (
-                <div
-                  key={`${item._id}-${index}`}
-                  className="flex items-center gap-4 border-b pb-4"
-                >
-                  <img
-                    src={item.product.image_of_land}
-                    alt={item.product.title}
-                    className="w-20 h-20 object-cover rounded-md"
-                  />
-                  <div className="flex-1">
-                    <h3 className="font-semibold">{item.product.title}</h3>
-                    <p className="text-sm text-gray-600">
-                      {item.product.description}
-                    </p>
-                    <p className="font-semibold text-lg">
-                      ${calculateItemTotal(item)}
-                    </p>
-                    {item.product.stock >=
-                    (itemQuantities[item._id] || item.quantity) ? (
-                      <p className="text-green-500 text-xs">
-                        IN STOCK ({item.product.stock} available)
-                      </p>
-                    ) : (
-                      <p className="text-red-500 text-xs">OUT OF STOCK</p>
-                    )}
-
-                    <QuantitySelector
-                      quantity={itemQuantities[item._id] || item.quantity}
-                      decrement={() => decrementItem(item._id)}
-                      increment={() => incrementItem(item._id)}
-                    />
-                  </div>
-
-                  <div className="flex flex-col space-y-2">
-                    <AppButton
-                      onClick={() =>
-                        handleBuyFromCart(
-                          item?.product?._id,
-                          itemQuantities[item._id] || item.quantity
-                        )
-                      }
-                      className="px-4 py-2 w-full"
-                      label="Buy"
-                      isLoading={buyLoad || orderConfirmLoad || keepLoad}
-                    />
-
-                    <AppButton
-                      onClick={() =>
-                        handleRemoveItem(
-                          item?.product?._id,
-                          itemQuantities[item._id] || item.quantity
-                        )
-                      }
-                      className="px-4 py-2 w-full bg-red-500 hover:bg-red-600"
-                      label="Remove"
-                      isLoading={removeLoad}
-                    />
-                  </div>
-                </div>
+              {cart.items.map((item) => (
+                <CartItemCard
+                  key={item._id}
+                  item={item}
+                  itemQuantities={itemQuantities}
+                  incrementItem={incrementItem}
+                  decrementItem={decrementItem}
+                  handleBuyFromCart={handleBuyFromCart}
+                  handleRemoveCart={handleRemoveCart}
+                  buyLoad={buyLoad}
+                  orderConfirmLoad={orderConfirmLoad}
+                  keepLoad={keepLoad}
+                  removeLoad={removeLoad}
+                />
               ))}
 
               <div className="flex justify-between items-center pt-4">
@@ -140,7 +92,8 @@ export default function BuyerCartTab({ cart, onCheckout }: CartProps) {
                   Total: ${calculateCartTotal()}
                 </span>
                 <AppButton
-                  onClick={onCheckout}
+                  disabled={true}
+                  onClick={() => {}}
                   className="px-6 py-2"
                   label="Checkout"
                 />
