@@ -9,7 +9,8 @@ import { neutronChain } from "@/config/neotron";
 //     CancelEscrow {},
 // }
 
-const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
+// const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
+const contractAddress = 'neutron1vexhaemuahp2hfvmfmrjem3ngzrcrea5w7q2vpzzyz2ykfzw7vpq7ygurd';
 
 const getClient = async () => {
   if (!window.keplr) throw new Error("Please connect your wallet first.");
