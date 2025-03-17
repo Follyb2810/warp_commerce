@@ -13,6 +13,7 @@ import {
 import AppButton from "../shared/AppButton";
 import { IApiResponse, ICategory } from "@/@types/types";
 import SelectField from "../shared/SelectField";
+import { useToast } from "@/hooks/useToast";
 
 export default function PostAdForm() {
   const [formData, setFormData] = useState({
@@ -28,6 +29,7 @@ export default function PostAdForm() {
     image_of_land: null as File | null,
   });
 
+  const toast = useToast()
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [documentError, setDocumentError] = useState("");
   const [createProduct, { isLoading }] = useCreateProductMutation();
@@ -80,13 +82,16 @@ export default function PostAdForm() {
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    try {
-      e.preventDefault();
-      
-      if (!formData.mapping_location) {
-        return alert("Please select a location");
-      }
+    e.preventDefault();
   
+    if (!formData.mapping_location) {
+      toast.error("Please select a location");
+      return;
+    }
+  
+    const loadingToast = toast.loading("Posting ad...");
+  
+    try {
       const formDataToSend = new FormData();
       formDataToSend.append("title", formData.title);
       formDataToSend.append("size_of_land", formData.size_of_land);
@@ -109,13 +114,20 @@ export default function PostAdForm() {
       }
   
       console.log("Submitting FormData:", formDataToSend);
-      
+  
       const result: IApiResponse = await createProduct(formDataToSend).unwrap();
+      
+      toast.dismiss(loadingToast);
+      toast.success(result.message || "Ad successfully posted!");
+      
       console.log("API Response:", result);
     } catch (error) {
+      toast.dismiss(loadingToast);
       console.error("Error submitting form:", error);
+      toast.error("Error posting ad");
     }
   };
+  
   
 
   return (

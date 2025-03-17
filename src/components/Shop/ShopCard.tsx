@@ -1,7 +1,4 @@
 import { IProduct } from "@/@types/types";
-// import { RootState, useAppSelector } from "@/store";
-// import { useState } from "react";
-// import AppButton from "../shared/AppButton";
 import { Link } from "react-router-dom";
 
 export interface ShopCardProps extends IProduct {
@@ -18,18 +15,21 @@ export default function ShopCard({
   discountPrice,
   discount,
   stock,
-  _id
+  _id,
 }: ShopCardProps) {
-
   return (
-    <Link to={`/shop/${_id}`} className="border p-4 rounded-lg shadow-sm bg-white relative cursor-pointer">
+    <div className="border p-4 rounded-lg shadow-sm bg-white relative">
       {discount && (
         <span className="absolute top-2 left-2 bg-blue-600 text-white text-xs px-2 py-1 rounded">
           {discount}%
         </span>
       )}
 
-      <img src={image_of_land} alt={title} className="w-full h-40 object-cover rounded-md" />
+      <img
+        src={image_of_land}
+        alt={title}
+        className="w-full h-40 object-cover rounded-md"
+      />
 
       <h3 className="text-sm font-semibold mt-2">{title}</h3>
 
@@ -50,28 +50,13 @@ export default function ShopCard({
         )}
       </div>
 
-
-      {/* <div className="flex items-center justify-between mt-2 border rounded-full p-2 w-full">
-        <AppButton
-          onClick={decrement}
-          disabled={quantity === 0}
-          className={`px-3 py-1 rounded-full text-sm ${
-            quantity === 0 ? "text-gray-400 cursor-not-allowed" : "bg-gray-200 hover:bg-gray-300"
-          }`}
-         label="-"
-        />
-        <span className="text-sm font-medium">{quantity}</span>
-        <AppButton onClick={increment} className="px-3 py-1 bg-warp-200 rounded-full hover:bg-gray-300" label="+"/>
-          
-      </div>
-
-      {isAuthenticated && quantity > 0 && (
-        <AppButton
-          onClick={addToCart}
-          className="mt-3 w-full bg-blue-600 text-white py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition"
-          label="Add to Cart"
-        />
-      )} */}
-    </Link>
+      <Link
+        to={`/shop/${_id}`}
+        className="mt-3 block bg-blue-200 text-white text-center py-2 rounded-md text-sm font-medium
+         hover:text-white hover:bg-blue-400 transition"
+      >
+        View Details
+      </Link>
+    </div>
   );
 }
