@@ -67,7 +67,7 @@ export function useCartActions() {
           toast.error("Escrow transaction could not be completed.");
         }
       } else {
-        toast.error("The selected item is not available for purchase.");
+        toast.error(response.message || "The selected item is not available for purchase.");
       }
     } catch (error) {
       console.error("Error processing purchase:", error);
