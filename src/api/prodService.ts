@@ -32,6 +32,7 @@ export const prodService = baseDomain.injectEndpoints({
       invalidatesTags: (_, __, { productId }) => [
         { type: "Product", id: productId },
         { type: "Product" },
+        { type: "Cart" },
       ],
     }),
   }),

@@ -8,7 +8,7 @@ export const cartService = baseDomain.injectEndpoints({
         method: "POST",
         body: { productId, quantity },
       }),
-      invalidatesTags: [{ type: "Cart" }], 
+      invalidatesTags: [{ type: "Cart" },{ type: "Product" }], 
     }),
     buyFromCart: build.mutation({
       query: ({
@@ -23,7 +23,7 @@ export const cartService = baseDomain.injectEndpoints({
         body: { productId, quantity },
       }),
       // providesTags: [],
-        invalidatesTags: ( { productId }) => [{ type: 'Cart', id :productId}],
+        invalidatesTags: ( { productId }) => [{ type: 'Cart', id :productId},{ type: "Product" }],
     }),
 
     removeFromCart: build.mutation({
@@ -32,7 +32,7 @@ export const cartService = baseDomain.injectEndpoints({
         method: "PUT",
         body: { productId, quantity },
       }),
-      invalidatesTags: ({ productId }) => [{ type: "Cart", id: productId }], 
+      invalidatesTags: ({ productId }) => [{ type: "Cart", id: productId },{ type: "Product" }], 
     }),
     deleteFromCart: build.mutation({
       query: ({ cartId }: { cartId: string }) => ({
@@ -45,7 +45,7 @@ export const cartService = baseDomain.injectEndpoints({
 
     userCart: build.query({
       query: () => "/cart/user_cart",
-      providesTags: [{ type: "Cart" }],
+      providesTags: [{ type: "Cart" },{ type: "Product" },{ type: "Order" }],
     }),
 
     allProduct: build.query({

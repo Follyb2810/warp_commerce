@@ -27,7 +27,8 @@ export const baseDomain = createApi({
   keepUnusedDataFor: 5,          
   tagTypes: ["Product",'Cart','Order'],
   baseQuery: fetchBaseQuery({
-    baseUrl,             
+    // baseUrl,  
+    baseUrl: '/api',           
     credentials: 'include', 
     prepareHeaders: async (headers, ) => {
       try {
