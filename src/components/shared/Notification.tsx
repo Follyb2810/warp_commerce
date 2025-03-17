@@ -8,7 +8,8 @@ export default function Notification() {
   const location = useLocation();
     const {value:storeCart,totalQuantity} = useAppSelector((state: RootState) => state.cart); 
     console.log(storeCart)
-    console.log(storeCart,'totalQuantity')
+    console.log(totalQuantity,'totalQuantity')
+    
     const NotiData = [
       {
         icon: (className: string) => <ShoppingCart className={className} />,
