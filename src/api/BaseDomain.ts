@@ -30,7 +30,8 @@ export const baseDomain = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl,  
     // baseUrl: '/api',           
-    credentials: 'include', 
+    // credentials: 'include', 
+    // mode:'no-cors',
     prepareHeaders: async (headers, ) => {
       try {
         const accessToken = AuthClientStore.getAccessToken()
