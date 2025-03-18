@@ -32,7 +32,7 @@ export const baseDomain = createApi({
     // baseUrl: '/api',           
     // credentials: 'include', 
     // mode:'no-cors',
-    prepareHeaders: async (headers, ) => {
+    prepareHeaders:(headers, ) => {
       try {
         const accessToken = AuthClientStore.getAccessToken()
         if(accessToken){
