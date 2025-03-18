@@ -97,7 +97,7 @@ export default function HistoryCard({ purchase, showActions = false }: HistoryCa
       </div>
 
       <p className="text-gray-700">
-        <strong>Amount:</strong> {amount} ETH
+        <strong>Amount:</strong> {amount} NTRN
       </p>
       <p className="text-gray-700">
         <strong>Status:</strong> {purchase.status}
