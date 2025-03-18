@@ -8,6 +8,7 @@ import CategorySelector from "./CategorySelector";
 import { headerMenu } from "@/CONSTANT/data";
 import { Link } from "react-router-dom";
 import { WalletConnect } from "../Wallet/WalletConnect";
+import Logo from "./Logo";
 
 interface IMobileMenu {
   isOpen: boolean;
@@ -67,8 +68,9 @@ interface ITopHeader {
 }
 
 const TopHeader: React.FC<ITopHeader> = ({ isOpen, closeMobile }) => (
-  <section className="p-3 flex items-center justify-between">
-    <h2 className="text-lg font-bold text-warp-100 px-2">warppay</h2>
+  <section className="p-3 flex items-center justify-between gap-2">
+    {/* <h2 className="text-lg font-bold text-warp-100 px-2">warppay</h2> */}
+    <Logo/>
     <div className="flex md:hidden items-center gap-4">
       {/* <AppButton label="Connect" variant="default" /> */}
       <WalletConnect/>
