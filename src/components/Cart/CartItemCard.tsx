@@ -32,17 +32,17 @@ export default function CartItemCard({
   return (
     <div className="flex items-center gap-4 border-b pb-4">
       <img
-        src={item.product.image_of_land}
-        alt={item.product.title}
+        src={item?.product?.image_of_land}
+        alt={item?.product?.title}
         className="w-20 h-20 object-cover rounded-md"
       />
       <div className="flex-1">
-        <h3 className="font-semibold">{item.product.title}</h3>
-        <p className="text-sm text-gray-600">{item.product.description}</p>
+        <h3 className="font-semibold">{item?.product?.title}</h3>
+        <p className="text-sm text-gray-600">{item?.product?.description}</p>
         <p className="font-semibold text-lg">${itemTotal.toFixed(6)}</p>
-        {item.product.stock >= (itemQuantities[item._id] || item.quantity) ? (
+        {item?.product?.stock >= (itemQuantities[item._id] || item.quantity) ? (
           <p className="text-green-500 text-xs">
-            IN STOCK ({item.product.stock} available)
+            IN STOCK ({item?.product?.stock} available)
           </p>
         ) : (
           <p className="text-red-500 text-xs">OUT OF STOCK</p>
