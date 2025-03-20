@@ -43,10 +43,10 @@ export default function ShopCard({
         {discountPrice ? (
           <>
             <p className="text-red-500 font-bold">${discountPrice}</p>
-            <p className="line-through text-gray-400 text-sm">${price} Ntrn</p>
+            <p className="line-through text-gray-400 text-sm">{price} NTRN</p>
           </>
         ) : (
-          <p className="font-bold">${price} Ntrn</p>
+          <p className="font-bold">{price} NTRN</p>
         )}
       </div>
 
