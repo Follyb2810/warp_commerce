@@ -13,6 +13,7 @@ interface CartItemProps {
   orderConfirmLoad: boolean;
   keepLoad: boolean;
   removeLoad: boolean;
+  // buyLoading:Record<string,boolean>
 }
 
 export default function CartItemCard({

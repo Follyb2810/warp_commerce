@@ -1,39 +1,33 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { ICartResponseData } from "@/@types/types";
 import AppButton from "../shared/AppButton";
 import { useCartActions } from "@/hooks/useCartActions";
 import { useState, useEffect } from "react";
 import CartItemCard from "./CartItemCard";
-import { useUserCartQuery } from "@/api/cartService";
-import {  useAppDispatch } from "@/store";
-import { setCart } from "@/features/cartSlice";
+import useSetCart from "@/hooks/useSetCart";
+import { useAppDispatch } from "@/store";
+import { setQuantity as setQuantityFromReducer } from "@/features/cartSlice";
 
 export default function BuyerCartTab() {
   const [itemQuantities, setItemQuantities] = useState<Record<string, number>>(
     {}
   );
-  
   const dispatch = useAppDispatch()
-  const { data } = useUserCartQuery({});
-  // const cart = data?.data as ICartResponseData;
-  const cart = data?.data as ICartResponseData ?? { items: [] };
-
-  useEffect(() => {
-    if (data?.data?.items) {
-      dispatch(setCart({ items: data.data.items ?? [] }));
-    } else {
-      dispatch(setCart({ items: [] }));
-    }
-  }, [data, dispatch]);
   
 
+  const { cart } = useSetCart();
+
   useEffect(() => {
+    if (!cart?.items) return;
+  
     const initialQuantities: Record<string, number> = {};
-    cart?.items.forEach((item) => {
+    cart.items.forEach((item) => {
       initialQuantities[item._id] = item.quantity;
     });
+  
     setItemQuantities(initialQuantities);
-  }, [cart?.items]);
+  }, [cart?.items.length]);
+  // }, [JSON.stringify(cart?.items)]);
+  
 
   const {
     handleRemoveCart,
@@ -44,21 +38,34 @@ export default function BuyerCartTab() {
     buyLoad,
     orderConfirmLoad,
     keepLoad,
+    // buyLoading
   } = useCartActions();
-
+  
   const incrementItem = (itemId: string) => {
-    setItemQuantities((prev) => ({
-      ...prev,
-      [itemId]: (prev[itemId] || 0) + 1,
-    }));
+    setItemQuantities((prev) => {
+      const updatedQuantity = (prev[itemId] || 0) + 1;
+      return {
+        ...prev,
+        [itemId]: updatedQuantity,
+      };
+    });
+  
+    dispatch(setQuantityFromReducer({ _id: itemId, quantity: itemQuantities[itemId] + 1 || 1 }));
   };
-
+  
   const decrementItem = (itemId: string) => {
-    setItemQuantities((prev) => ({
-      ...prev,
-      [itemId]: prev[itemId] > 0 ? prev[itemId] - 1 : 0,
-    }));
+    setItemQuantities((prev) => {
+      const updatedQuantity = Math.max(1, (prev[itemId] || 1) - 1);
+      return {
+        ...prev,
+        [itemId]: updatedQuantity,
+      };
+    });
+  
+    dispatch(setQuantityFromReducer({ _id: itemId, quantity: Math.max(1, itemQuantities[itemId] - 1 || 1) }));
   };
+  
+  
 
   const calculateItemTotal = (itemId: string, price: number) => {
     const quantity = itemQuantities[itemId] || 1;
@@ -75,7 +82,6 @@ export default function BuyerCartTab() {
   return (
     <div className="w-full mx-auto py-4">
       <Card>
-
         <CardContent>
           {cart.items.length > 0 ? (
             <div className="space-y-4">
@@ -92,6 +98,7 @@ export default function BuyerCartTab() {
                   orderConfirmLoad={orderConfirmLoad}
                   keepLoad={keepLoad}
                   removeLoad={removeLoad}
+                  // buyLoading={buyLoading}
                 />
               ))}
 

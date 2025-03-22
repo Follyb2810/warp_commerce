@@ -9,7 +9,7 @@ import { setAuthenticated } from "@/features/authSlice";
 import { IApiResponse, IUserResponse } from "@/@types/types";
 import { RootState, useAppDispatch, useAppSelector } from "@/store";
 import AppButton from "../shared/AppButton";
-import AuthClientStore from "@/utils/AuthStore";
+import AuthStore from "@/utils/AuthStore";
 import { useToast } from "@/hooks/useToast";
 
 interface IWalletConnectProps {
@@ -59,7 +59,7 @@ export const WalletConnect: React.FC<IWalletConnectProps> = ({ buttonProps }) =>
             },
           })
         );
-        AuthClientStore.setAccessToken(successResponse.accessToken);
+        AuthStore.setAccessToken(successResponse.accessToken);
         toast.success("Wallet connected successfully!");
       } else {
         toast.error(response.message || "Authentication failed", {
@@ -80,6 +80,7 @@ export const WalletConnect: React.FC<IWalletConnectProps> = ({ buttonProps }) =>
   const handleDisconnect = () => {
     if (window.confirm("Are you sure you want to disconnect your wallet?")) {
       disconnect();
+      AuthStore.removeAccessToken();
       dispatch(setAuthenticated({ isAuthenticated: false, user: null }));
       setOpen(false);
       toast.success("Wallet disconnected successfully.");

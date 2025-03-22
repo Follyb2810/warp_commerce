@@ -22,7 +22,8 @@ const cartSlice = createSlice({
         0
       );
     },
-    addToCart(state, action: PayloadAction<ICart>) {
+    addToCart(state, action: PayloadAction<{_id: string}>) {
+    // addToCart(state, action: PayloadAction<ICart>) {
       const productIndex = state.value.findIndex((product) => product._id === action.payload._id);
 
       if (productIndex > -1 && state.value[productIndex]) {

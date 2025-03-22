@@ -2,16 +2,17 @@ import { useState, useCallback, useMemo } from "react";
 import { IApiResponse, IAvailableOrder } from "@/@types/types";
 import { useAddToCartMutation } from "@/api/cartService";
 import { useOrderAvailableMutation, useOrderPaymentConfirmMutation } from "@/api/orderService";
-import { RootState, useAppSelector } from "@/store";
+import { RootState, useAppDispatch, useAppSelector } from "@/store";
 import { confirmOrder } from "@/utils/orderConfirm";
 import { initEscrow } from "@/utils/escrowService";
 import { useToast } from "./useToast";
+import { addToCart as addToCartReducer } from '@/features/cartSlice'; 
 
 export const useProductActions = (_id: string) => {
   const [quantity, setQuantity] = useState(1);
-  const [keepLoad,setKeepLoad] = useState(false)
+  const [keepLoad, setKeepLoad] = useState(false);
   const toast = useToast();
-
+  const dispatch = useAppDispatch();
 
   const increment = () => setQuantity((prev) => prev + 1);
   const decrement = () => setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
@@ -19,7 +20,7 @@ export const useProductActions = (_id: string) => {
   const [addToCart, { isLoading }] = useAddToCartMutation();
   const [orderAvailable, { isLoading: orderLoad }] = useOrderAvailableMutation();
   const [orderConfirm, { isLoading: orderConfirmLoad }] = useOrderPaymentConfirmMutation();
-  
+
   const { user } = useAppSelector((state: RootState) => state.auth);
 
   const isAddingToCart = useMemo(() => isLoading, [isLoading]);
@@ -27,9 +28,11 @@ export const useProductActions = (_id: string) => {
   const handleAddToCart = useCallback(async () => {
     try {
       const response: IApiResponse = await addToCart({ quantity, productId: _id }).unwrap();
+      dispatch(addToCartReducer({ _id }));  // Use renamed reducer function
       toast.success(response.message || "Added to cart successfully!");
+
       console.log(response);
-    } catch (error:unknown) {
+    } catch (error: unknown) {
       console.error("Error adding to cart:", error);
       toast.error("Failed to add to cart.");
     }
@@ -37,24 +40,24 @@ export const useProductActions = (_id: string) => {
 
   const handleBuyOrder = useCallback(async () => {
     try {
-      setKeepLoad(true)
+      setKeepLoad(true);
       const response: IApiResponse = await orderAvailable({ productId: _id, quantity }).unwrap();
-      
+
       if (response.status === 200) {
         toast.success(response.message || "Order available. Proceeding with payment...");
         const available = response.data as IAvailableOrder;
         const { totalAmount, sellerAddress } = available;
-        
+
         console.log("Order details:", available);
         console.log("Processing payment...");
         toast.info("Processing payment...");
-        
+
         const escrowResult = await initEscrow(
           user!.walletAddress,
           totalAmount.toString(),
           sellerAddress
         );
-        
+
         if (escrowResult && escrowResult.transactionHash) {
           await confirmOrder(orderConfirm, _id, quantity, escrowResult.transactionHash);
           toast.success("Payment successful! Order confirmed.");
@@ -70,10 +73,10 @@ export const useProductActions = (_id: string) => {
       console.error("Error processing order:", error);
       toast.error("An error occurred while processing your order.");
     } finally {
-      toast.dismiss()
-      setKeepLoad(false); 
+      toast.dismiss();
+      setKeepLoad(false);
     }
-  }, [_id, quantity, orderAvailable, orderConfirm,user]);
+  }, [_id, quantity, orderAvailable, orderConfirm, user]);
 
   return {
     quantity,
@@ -84,8 +87,6 @@ export const useProductActions = (_id: string) => {
     orderConfirmLoad,
     handleAddToCart,
     handleBuyOrder,
-    keepLoad
+    keepLoad,
   };
 };
-
-

@@ -2,18 +2,20 @@ import { Bell, MessageCircle, ShoppingCart } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import { RootState, useAppSelector } from "@/store";
+// import useSetCart from "@/hooks/useSetCart";
 
 export default function Notification() {
   const navigate = useNavigate();
   const location = useLocation();
-    const {value:storeCart,totalQuantity} = useAppSelector((state: RootState) => state.cart); 
-    console.log(storeCart)
-    console.log(totalQuantity,'totalQuantity')
+    // const { cart } = useSetCart();
+    const {totalQuantity} = useAppSelector((state: RootState) => state.cart); 
+    const {isAuthenticated} = useAppSelector((state: RootState) => state.auth); 
+    
     
     const NotiData = [
       {
         icon: (className: string) => <ShoppingCart className={className} />,
-        count: 2, 
+        count: isAuthenticated ? totalQuantity : 1, 
         path: "/shop/buyer_cart",
       },
       {

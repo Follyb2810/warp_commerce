@@ -11,10 +11,8 @@ export interface CartProps {
 
 
 export default function HistoryTab() {
-  const { data, error } = useAllUserOrderQuery(undefined,{});
+  const { data, error } = useAllUserOrderQuery('release',{});
 
-  console.log(data);
-  console.log(data?.data);
   console.log(error);
 
   return (

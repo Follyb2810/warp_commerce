@@ -1,5 +1,5 @@
 
-class AuthClientStore {
+class AuthStore {
     static getAccessToken():string| null {
       return localStorage.getItem('auth');
     }
@@ -25,4 +25,4 @@ class AuthClientStore {
     }
   }
   
-  export default AuthClientStore;
+  export default AuthStore;

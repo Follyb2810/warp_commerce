@@ -1,4 +1,4 @@
-import AuthClientStore from '@/utils/AuthStore';
+import AuthStore from '@/utils/AuthStore';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import axios from 'axios';
 
@@ -34,7 +34,7 @@ export const baseDomain = createApi({
     // mode:'no-cors',
     prepareHeaders:(headers, ) => {
       try {
-        const accessToken = AuthClientStore.getAccessToken()
+        const accessToken = AuthStore.getAccessToken()
         if(accessToken){
           headers.set('Authorization',`Bearer ${accessToken}`)
         }
