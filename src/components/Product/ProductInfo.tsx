@@ -30,8 +30,8 @@ export default function ProductInfo({
       </div>
       {description && <p className="text-gray-600 text-sm md:text-base">{description}</p>}
       <div className="flex items-center space-x-3 mt-3">
-        {price && <span className="text-red-500 font-bold text-lg md:text-xl">${price}</span>}
-        {oldPrice && <span className="line-through text-gray-400">${oldPrice}</span>}
+        {price && <span className="text-red-500 font-bold text-lg md:text-xl">{price} NTRN</span>}
+        {oldPrice && <span className="line-through text-gray-400">{oldPrice} NTRN</span>}
       </div>
 
       {document_of_land && (
