@@ -10,9 +10,11 @@ export const prodService = baseDomain.injectEndpoints({
       }),
     }),
     allProduct: build.query({
-      query: () => "/product",
+      query: ({ page = 1, limit = 10 }: { page?: number; limit?: number }) => 
+        `/product?page=${page}&limit=${limit}`,
       providesTags: ["Product", "Order"],
     }),
+    
     getCategory: build.query({
       query: () => "/category",
     }),

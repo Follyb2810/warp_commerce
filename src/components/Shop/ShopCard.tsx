@@ -5,7 +5,10 @@ export interface ShopCardProps extends IProduct {
   price: number;
   discountPrice?: number;
   discount?: number;
-  inStock: boolean;
+  page?: number;
+  limit?: number;
+  totalPages?: number;
+  totalItems?: number;
 }
 
 export default function ShopCard({

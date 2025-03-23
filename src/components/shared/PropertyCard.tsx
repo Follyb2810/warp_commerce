@@ -9,7 +9,7 @@ export interface PropertyCardProps extends IProduct {
   discount?: number;
   oldPrice?: number;
   newPrice?: number;
-  reviews: number;
+  reviews?: number;
   onPress?: () => void;
   isAddToCart?: boolean;
 }
@@ -69,7 +69,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         </div>
 
         <p className="text-green-600 text-xs mt-2">Available {stock}</p>
-        {reviews > 0 && (
+        {reviews && reviews > 0 && (
           <p className="text-gray-500 text-xs">{reviews} Reviews</p>
         )}
 

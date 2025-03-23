@@ -3,10 +3,12 @@
 import ApiStatusMessage from '../shared/ApiStatusMessage'
 import PropertyCard, { PropertyCardProps } from '../shared/PropertyCard'
 import { useAllProductQuery } from '@/api/prodService'
+import { IShopList } from '../Shop/ShopList';
 // import { getLocation } from '@/utils/getLocation';
 
 export default function AllProduct() {
   const { isLoading, data, error } = useAllProductQuery({});
+  const productData = data?.data?.products as IShopList["products"];
   
 //   :51.51381330519996
 
@@ -25,8 +27,8 @@ export default function AllProduct() {
       />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {data?.data?.products?.length > 0 ? (
-          data?.data.products.slice(0, 6).map((property: PropertyCardProps, index: number) => (
+        {productData?.length > 0 ? (
+          productData.slice(0, 6).map((property: PropertyCardProps, index: number) => (
             <PropertyCard key={index} {...property}  isAddToCart />
           ))
         ) : (

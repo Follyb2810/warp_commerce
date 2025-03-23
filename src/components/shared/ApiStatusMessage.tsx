@@ -1,3 +1,5 @@
+import SkeletonLoader from "./SkeletonLoader";
+
 interface ApiStatusMessageProps {
     isLoading: boolean;
     error: unknown;
@@ -12,7 +14,12 @@ interface ApiStatusMessageProps {
     errorText = "Something went wrong. Please try again." 
   }) => {
     if (isLoading) {
-      return <p className="text-center text-gray-500">{loadingText}</p>;
+      return(
+        <>
+        <p className="text-center text-gray-500">{loadingText}</p>
+        <SkeletonLoader/>
+        </>
+      )
     }
   
     if (error) {

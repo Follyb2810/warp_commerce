@@ -1,14 +1,23 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-const categories = ["Electronics", "Fashion", "Home & Garden", "Sports", "Toys", "Automotive", "Books"];
+import { useGetCategoryQuery } from "@/api/prodService";
+import { ICategory } from "@/@types/types";
 
 const CategorySelector: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { data } = useGetCategoryQuery({});
+
+  const categories = useMemo(() =>
+      data?.data?.map((item: { _id: string; name: string }) => ({
+        _id: item._id,
+        name: item.name,
+      })) || [],
+    [data]
+  );
 
   return (
     <div className="relative flex flex-col items-start gap-2">
@@ -22,20 +31,23 @@ const CategorySelector: React.FC = () => {
           onClick={() => setIsOpen((prev) => !prev)}
         >
           All Categories
-          <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+          <motion.span
+            animate={{ rotate: isOpen ? 180 : 0 }}
+            transition={{ duration: 0.2 }}
+          >
             <ChevronDown className="w-4 h-4" />
           </motion.span>
         </Button>
-        {selectedCategory && (
+      {selectedCategory && (
         <div className="text-sm text-gray-400 mt-1">
-          <span className="text-warp-100 font-medium bg-gray-200 p-2 rounded-lg">{selectedCategory}</span>
+          <span className="font-medium bg-gray-200 p-2 rounded-lg">
+            {selectedCategory}
+          </span>
         </div>
       )}
       </div>
 
-      
 
-      {/* Dropdown */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -49,16 +61,17 @@ const CategorySelector: React.FC = () => {
             )}
           >
             <ul className="py-2" onMouseLeave={() => setIsOpen(false)}>
-              {categories.map((category) => (
+              {categories.map((category: ICategory) => (
                 <li
-                  key={category}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer transition-colors text-warp-100"
+                  key={category._id}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer transition-colors text-gray-700"
                   onClick={() => {
-                    setSelectedCategory(category);
+                    setSelectedCategory(category.name!);
+                    console.log("Selected Category ID:", category._id);
                     setIsOpen(false);
                   }}
                 >
-                  {category}
+                  {category.name}
                 </li>
               ))}
             </ul>
